@@ -125,13 +125,13 @@
                   <div class="form-row">
                     <div class="form-group col-md-4">
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="days" value="1">
+                        <input class="form-check-input" type="checkbox" name="days" value="1" disabled="">
                         <label class="form-check-label" for="flexCheckDefault">
                           Multiple Lightdues
                         </label>
                       </div>
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <input class="form-check-input" type="checkbox" value="" disabled="">
                         <label class="form-check-label" for="flexCheckDefault">
                           Has Grab
                         </label>

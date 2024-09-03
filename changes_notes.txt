@@ -1,0 +1,19 @@
+1/ vessel_details.php
+	ship_perticular page (forwadings form)
+		vessel_details section
+			* Capt name field updated with placeholder "Without 'CAPT.' word".
+			* Nature field updated with placeholder "BULK" word.
+		export forwading section
+			* MMD Forwading export button added
+				modified (vessel_details.php, server.php, functions.php)
+
+2/ Added a file "changes_notex.txt" file to track changes manually
+
+3/ index.php 
+	filter modal section (Disabled filter checkboxes which are not functional yet)
+		* Multiple light dues
+		* Has grab
+
+4/ Improved Readme.md file
+	* Improved installation prosecc instruction
+	* added username and password to login

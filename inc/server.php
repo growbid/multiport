@@ -2024,6 +2024,11 @@
 			if(empty($arrived)){$msg=alertMsg("Vessel Not Yet Received!","danger");}
     		else{inctaxforwading($msl_num);}
 		}
+		// mmd forwading
+		elseif ($btnVal == "mmdforwading") {
+			if(empty($arrived)){$msg=alertMsg("Vessel Not Yet Received!","danger");}
+    		else{mmdforwading($msl_num);}
+		}
 		// inc tax stamp
 		elseif($btnVal == "Stamp_inctax"){
         	if(empty($arrived)){$msg=alertMsg("Vessel Not Yet Received!","danger");}

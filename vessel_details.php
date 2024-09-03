@@ -1701,7 +1701,7 @@
                       <div class="form-row">
                         <div class="form-group col-md-4">
                           <label for="inputEmail4">Nature</label>
-                          <input type="text" step="any" class="form-control" name="vsl_nature" value="<?php echo $vsl_nature ?>">
+                          <input type="text" step="any" class="form-control" placeholder="BULK" name="vsl_nature" value="<?php echo $vsl_nature ?>">
                         </div>
                         <div class="form-group col-md-8">
                           <label for="inputState">Shipper Name</label>
@@ -1736,7 +1736,7 @@
                         </div>
                         <div class="form-group col-md-7">
                           <label for="inputEmail4">Capt Name</label>
-                          <input type="text" step="any" class="form-control" name="capt_name" value="<?php echo $capt_name ?>">
+                          <input type="text" step="any" class="form-control" placeholder="Without 'CAPT. ' word " name="capt_name" value="<?php echo $capt_name ?>">
                         </div>
                         <div class="form-group col-md-2">
                           <label for="inputEmail4">Number Of Crew</label>
@@ -1782,7 +1782,7 @@
                       <table class="table table-dark table-sm table-custom">
                         <thead>
                           <tr>
-                            <th colspan="7">Vessel Details</th>
+                            <th colspan="8">Vessel Details</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1791,7 +1791,7 @@
                             <input type="hidden" name="msl_num" value="<?php echo $msl_num; ?>">
                             <!-- 1st -->
                             <tr style="border-bottom: 1px solid white;">
-                              <td colspan="7">
+                              <td colspan="8">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "export_vsl_details" ?>" style="color: white">
                                   Export Vessel Details
@@ -1800,7 +1800,7 @@
                             </tr>
 
                             <tr>
-                              <th colspan="7"> Before Arrive</th>
+                              <th colspan="8"> Before Arrive</th>
                             </tr>
                             <tr style="border-bottom: 1px solid white;">
                               <td>
@@ -1840,7 +1840,7 @@
                               </td>
 
 
-                              <td>
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "survey_booking" ?>" style="color: white">
                                   6.Survey Booking
@@ -1860,7 +1860,7 @@
 
 
                             <tr>
-                              <th colspan="7"> After Arrive</th>
+                              <th colspan="8"> After Arrive</th>
                             </tr>
                             <tr style="border-bottom: 1px solid white;">
 
@@ -1904,6 +1904,13 @@
                                 </button>
                               </td>
 
+                              <td>
+                                <!-- <label for="inputEmail4">Msl Num</label> -->
+                                <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="mmdforwading" style="color: white">
+                                  MMD Forwading
+                                </button>
+                              </td>
+
 
                               <td>
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
@@ -1917,10 +1924,10 @@
 
 
                             <tr>
-                              <th colspan="7"> After Sail</th>
+                              <th colspan="8"> After Sail</th>
                             </tr>
                             <tr style="border-bottom: 1px solid white;">
-                              <td>
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "port_health" ?>" style="color: white">
                                   20.Port Helth
@@ -1944,7 +1951,7 @@
                               </td>
 
 
-                              <td>
+                              <td colspan="1">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "egm_format" ?>" style="color: white">
                                   23.EGM Format
@@ -1952,7 +1959,7 @@
                               </td>
 
 
-                              <td>
+                              <td colspan="1">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-info btn-sm" name="export_vsl_forwadings" value="<?php echo "after_sail" ?>" style="color: white">
                                   Export All
@@ -1962,7 +1969,7 @@
 
                             <!-- file cover section -->
                             <tr>
-                              <th colspan="7"> File Cover</th>
+                              <th colspan="8"> File Cover</th>
                             </tr>
 
                             <tr style="border-bottom: 1px solid white;">
@@ -1979,7 +1986,7 @@
                                   Accounts File Cover
                                 </button>
                               </td>
-                              <td colspan="1">
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-info btn-sm" name="export_vsl_forwadings" value="<?php echo "file_covers" ?>" style="color: white">
                                   Export All
@@ -1989,7 +1996,7 @@
 
 
                             <tr>
-                              <th colspan="7">Receving Doc's</th>
+                              <th colspan="8">Receving Doc's</th>
                             </tr>
                             <tr>
                               <td colspan="2">
@@ -2009,7 +2016,7 @@
                                   Representative Letter
                                 </button>
                               </td>
-                              <td>
+                              <td colspan="2">
                                 <button type="submit" class="form-control btn btn-success" name="export_vsl_forwadings" value="<?php echo "qurentine" ?>" style="color: white" disabled>
                                   Qurentine
                                 </button>
@@ -2035,7 +2042,7 @@
                                 </button>
                               </td>
 
-                              <td>
+                              <td colspan="2">
                                 <button type="submit" class="form-control btn btn-info btn-sm" name="export_vsl_forwadings" value="<?php echo "export_rcv_docs" ?>" style="color: white">
                                   Export All
                                 </button>

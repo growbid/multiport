@@ -511,7 +511,7 @@
 			}
 		}else{$dynamicsql = "SELECT * FROM vessels ";}
 		// show dynamicsql
-		// echo "<p>".$dynamicsql."</p>";
+		echo "<p>".$dynamicsql."</p>";
 		$run = mysqli_query($db, $dynamicsql); 
 		while ($row = mysqli_fetch_assoc($run)) {
 			$id = $row['id']; //
@@ -1964,6 +1964,36 @@
 				"month" => "$month"
 			]
 		); $pathToSave = "forwadings/auto_forwardings/".$filename;
+		$templateProcessor->saveAs($pathToSave);
+		header("location: vessel_details.php?ship_perticular=$msl_num");
+	}
+
+
+	function mmdforwading($msl_num = 205){
+		GLOBAL $db; $filename = "";
+
+		// get vessel data
+        $row1=mysqli_fetch_assoc(mysqli_query($db,"SELECT*FROM vessels WHERE msl_num='$msl_num'"));
+        $vessel = $row1['vessel_name']; $year = date("Y"); $month = date("m"); $day = date("d");
+
+        if(!empty($row1['arrived'])){$arrived = date('d.m.Y', strtotime($row1['arrived']));}
+        else{$arrived = "";}
+
+    	$exten = ".docx";$filename = "MMD FORWADING".$exten;
+		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/after_arrive/".$filename);
+    	// $filename = $msl_num.".MV. ".$vessel."_29.INCOME TAX FORWARDING.docx";
+		
+		// set pc forwading values
+    	$templateProcessor->setValues(
+			[
+				"msl_num" => "$msl_num",
+				"vessel" => "$vessel",
+				"arrived" => "$arrived",
+				"year" => "$year",
+				"month" => "$month",
+				"day" => "$day"
+			]
+		); $pathToSave = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel." ".$filename;
 		$templateProcessor->saveAs($pathToSave);
 		header("location: vessel_details.php?ship_perticular=$msl_num");
 	}
