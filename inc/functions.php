@@ -1907,7 +1907,7 @@
         $vessel = $row1['vessel_name']; $year = date("Y"); $month = date("m"); $day = date("d");
         $rotation = $row1['rotation']; if(empty($rotation)){$rotation = "2024/______";}
         $rotation_2 = substr($rotation,7)."/".substr($rotation,0,-7);
-        if(empty($rotation)){$rotation = date("Y")."/"; $rotation_2 = "______/".date("Y");}
+        if(empty($rotation)){$rotation = date("Y")."/______"; $rotation_2 = "______/".date("Y");}
         // looking for missing forwading info is esixt
 		
     	$exten = ".docx";$filename = "28.Stamp_PC Undertaking to Customs_New".$exten;
@@ -2033,6 +2033,50 @@
 				"month" => "$month"
 			]
 		); $pathToSave = "forwadings/auto_forwardings/".$filename;
+		$templateProcessor->saveAs($pathToSave);
+		header("location: vessel_details.php?ship_perticular=$msl_num");
+	}
+
+
+	function pcformet($msl_num = 205){
+		GLOBAL $db; $filename = "";
+		// get ship_perticular data
+        $row = mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM vessel_details WHERE msl_num = '$msl_num' ") ); $vsl_nrt = formatIndianNumber($row['vsl_nrt']); $with_retention = $row['with_retention'];
+        $capt_name = $row['capt_name']; $vsl_nationality = $row['vsl_nationality'];
+        $next_port = $row['next_port'];
+
+        // get vessel data
+        $row1=mysqli_fetch_assoc(mysqli_query($db,"SELECT*FROM vessels WHERE msl_num='$msl_num'"));
+        $vessel = $row1['vessel_name']; $year = date("Y"); $month = date("m"); $day = date("d");
+
+        if(!empty($row1['arrived'])){$arrived = date('d.m.Y', strtotime($row1['arrived']));}
+        else{$arrived = "";}
+        if(!empty($row1['sailing_date'])){$sailing_date=date('d.m.Y',strtotime($row1['sailing_date']));}
+        else{$sailing_date = "";}
+
+        $rotation = $row1['rotation']; if(empty($rotation)){$rotation = date("Y")."/______";}
+        
+        // looking for missing forwading info is esixt
+
+	    $exten = ".docx";$filename = "PC-FORMAT".$exten;
+		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/after_arrive/".$filename);
+	    // $filename = $msl_num.".MV. ".$vessel."_29.Stamp_Income_TAX.docx";
+		
+		// set pc forwading values
+    	$templateProcessor->setValues(
+			[
+				"msl_num" => "$msl_num",
+				"vessel" => "$vessel",
+				"rotation" => "$rotation",
+				"capt_name"=>"$capt_name",
+				"vsl_nationality"=>"$vsl_nationality",
+				"with_retention" => "$with_retention",
+				"next_port" => "$next_port",
+				"vsl_nrt" => "$vsl_nrt",
+				"year" => "$year",
+				"month" => "$month"
+			]
+		); $pathToSave = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel." ".$filename;
 		$templateProcessor->saveAs($pathToSave);
 		header("location: vessel_details.php?ship_perticular=$msl_num");
 	}

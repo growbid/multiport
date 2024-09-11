@@ -1,5 +1,28 @@
 <?php
 	include('inc/functions.php');
+		// prepare backup files
+		// scan folder for all files
+		$sourceFolderPath = 'inc/db_backups/factory-recovery';
+		// Get the list of all files and directories in the folder
+		$files = scandir($sourceFolderPath); foreach ($files as $file) {
+		    // Use pathinfo to get the file extension
+		    $fileInfo = pathinfo($file);
+		    if ($file == "." || $file == "..") { continue; }
+		    // echo $file."</br>";
+		}
+
+		// filter sql files
+		// Loop through the files and filter for only sql files (to input in database)
+		$allowedExtensions = array('sql');
+		foreach ($files as $file) {
+		    // Use pathinfo to get the file extension
+		    $fileInfo = pathinfo($file);
+		    // Check if the "extension" key exists and if it's in the list of allowed extensions
+		    if (isset($fileInfo['extension']) && in_array(strtolower($fileInfo['extension']), $allowedExtensions)) { $sqlFiles[] = $file; }
+		}
+
+		// get the sqlfile name {gets the last value of an array}
+		$sqlFileName = end($sqlFiles);
 	
 	// $templateProcessor->setValues(
 	// 	[

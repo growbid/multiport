@@ -1862,10 +1862,9 @@
                             <tr>
                               <th colspan="8"> After Arrive</th>
                             </tr>
-                            <tr style="border-bottom: 1px solid white;">
 
-
-                              <td>
+                            <tr>
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "finalEntry" ?>" style="color: white">
                                   13.Final Entry
@@ -1873,7 +1872,7 @@
                               </td>
 
 
-                              <td>
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "pcForwading" ?>" style="color: white">
                                   28.PC Forwading
@@ -1881,7 +1880,7 @@
                               </td>
 
 
-                              <td>
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "Stamp_PC" ?>" style="color: white">
                                   28.Stamp_PC
@@ -1895,24 +1894,31 @@
                                   29.Inc Tax Forwading
                                 </button>
                               </td>
-
-
-                              <td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid white;">
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "Stamp_inctax" ?>" style="color: white">
                                   29.Inc Tax Stamp
                                 </button>
                               </td>
 
-                              <td>
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="mmdforwading" style="color: white">
                                   MMD Forwading
                                 </button>
                               </td>
 
+                              <td colspan="2">
+                                <!-- <label for="inputEmail4">Msl Num</label> -->
+                                <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="pcformet" style="color: white">
+                                  PC Formet
+                                </button>
+                              </td>
 
-                              <td>
+
+                              <td colspan="2">
                                 <!-- <label for="inputEmail4">Msl Num</label> -->
                                 <button type="submit" class="form-control btn btn-info btn-sm" name="export_vsl_forwadings" value="<?php echo "after_arrive" ?>" style="color: white">
                                   Export All

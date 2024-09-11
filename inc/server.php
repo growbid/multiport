@@ -2034,6 +2034,11 @@
         	if(empty($arrived)){$msg=alertMsg("Vessel Not Yet Received!","danger");}
         	else{ inctaxstamp($msl_num); }
         }
+        // pcformet
+		elseif($btnVal == "pcformet"){
+        	if(empty($rotation)){$msg=alertMsg("Rotation Missing for pc!","danger");}
+        	else{ pcformet($msl_num); }
+        }
         // export all
         elseif($btnVal == "after_arrive"){ 
         	if(empty($vessel)){$msg=alertMsg("Vessel Name Missing", "danger");}
@@ -2041,9 +2046,10 @@
 	    	elseif(empty($vsl_nrt)){$msg=alertMsg("Vessel Nrt Missing","danger");}
 	    	elseif(empty($arrived)){$msg=alertMsg("Vessel Not Yet Received!","danger");}
 	    	else{
-	    		finalentryexport($msl_num);
-	    		pcforwadingexport($msl_num); pcstampexport($msl_num);
-	    		inctaxforwading($msl_num); inctaxstamp($msl_num);
+	    		finalentryexport($msl_num); pcforwadingexport($msl_num);
+	    		pcstampexport($msl_num); inctaxforwading($msl_num);
+	    		mmdforwading($msl_num); inctaxstamp($msl_num);
+	    		pcformet($msl_num);
 	    	}
         }
 
