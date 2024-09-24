@@ -6,6 +6,7 @@
 	}
 
 	if (isset($_POST['install'])) {
+		// grab the value from user data
 		$host = $_POST['host']; $username = $_POST['username']; $password = $_POST['password'];
 		$database = $_POST['database'];
 
@@ -20,27 +21,23 @@
 	    	$db = mysqli_connect($host, $username, $password, $database);
 		}
 
-		
-		if ($db->connect_error) {
-			die("Connection failed: " . $db->connect_error);
-		} 
+		// if can't connect, die and show error
+		if ($db->connect_error) { die("Connection failed: " . $db->connect_error); } 
 
-		//Drop Database
+		//Drop Database if exist
 		$sql = "DROP DATABASE IF EXISTS ".$database;
-		if ($db->query($sql) === TRUE) {
-			echo "Database Dropped <br/>";
-		} else {
-			echo "Database Not Droped <br/>". $db->error;
-		}
+		if ($db->query($sql) === TRUE){echo "Database Dropped <br/>";} 
+		else {echo "Database Not Droped <br/>". $db->error;}
+
 		// Create database
 		$sql = "CREATE DATABASE ".$database;
-		if ($db->query($sql) === TRUE) {
-			echo "Database created successfully <br/>";
-		} else {
-			echo "Error creating database: <br/>" . $db->error;
-		}
-		
+		if ($db->query($sql) === TRUE) {echo "Database created successfully <br/>";} 
+		else {echo "Error creating database: <br/>" . $db->error;}
+
+		// connection close
 		$db->close();
+
+		// again connect to database for new connection and restore backup
 		$db = mysqli_connect($host, $username, $password, $database);
 		// prepare backup files
 		// scan folder for all files
@@ -82,12 +79,26 @@
 			if ($error) { $msg = alertMsg($error, "danger"); } 
 			// delete files after installation after restore
 			else{
-				$errcount = 0;
-				// delete backup from file
-				if (!unlink($filePath)) { $errcount++;
-					$msg = alertMsg("Could Not Delete Database File!", "danger");
-				}
+				// now create the conn file based on userdata for database connection
+				// Prepare the connection script content
+		        $fileContent = "<?php\n";
+		        $fileContent .= "\$host = '$host';\n";
+		        $fileContent .= "\$username = '$username';\n";
+		        $fileContent .= "\$password = '$password';\n";
+		        $fileContent .= "\$database = '$database';\n\n";
+		        $fileContent .= "\$db = new mysqli(\$host, \$username, \$password, \$database);\n\n";
+		        $fileContent .= "if(\$db->connect_error) {die('Connection failed: ' . \$db->connect_error);}\n";
+		        $fileContent .= "?>";
+
+		        // Define the file path where the connection file will be created
+		        $conFilePath = 'inc/conn.php';
+
+		        // Create the new PHP file
+		        if (file_put_contents($conFilePath, $fileContent)){echo "File: 'conn.php' Created Successfully!";} 
+		        else {echo "Error: Unable to create connection file.";}
+				
 				// delete Installation file
+				$errcount = 0;
 				if (!unlink("install.php")) { $errcount++;
 					$msg = alertMsg("Could Not Delete Installation File!", "danger");
 				}

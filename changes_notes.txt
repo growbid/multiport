@@ -1,4 +1,22 @@
-1/ vessel_details.php
+1/ Added a file "changes_notex.txt" file to track changes manually
+
+
+2/ Improved Readme.md file
+	* Improved installation prosecc instruction
+	* added username and password to login
+
+
+3/ index.php 
+	filter modal section (Disabled filter checkboxes which are not functional yet)
+		* Multiple light dues
+		* Has grab
+
+
+4/ install.php 
+	Creates new conn file based on user data {15.09.2024}
+
+
+5/ vessel_details.php
 	ship_perticular page (forwadings form)
 		vessel_details section
 			* Capt name field updated with placeholder "Without 'CAPT.' word".
@@ -6,14 +24,11 @@
 		export forwading section
 			* MMD Forwading export button added
 				modified (vessel_details.php, server.php, functions.php)
+			* Updated Templets, ranamed and improved {15.09.2024}
+			    modified (functions.php) {15.09.2024}
+			    renamed templets 1-6 before arrive {15.09.2024}
+			    modified (6...), can type bangla date now there {15.09.2024}
+	blinputs page (blinput form)
+		* add bl, edit bl, delete bl [vessels.php, server.php, functions.php] {24.09.2024}
 
-2/ Added a file "changes_notex.txt" file to track changes manually
-
-3/ index.php 
-	filter modal section (Disabled filter checkboxes which are not functional yet)
-		* Multiple light dues
-		* Has grab
-
-4/ Improved Readme.md file
-	* Improved installation prosecc instruction
-	* added username and password to login
+	"Forwading" Header changed into navbar "Dashboard, Ship Perticular, Forwadings, BL Inputs" {23.09.2024}

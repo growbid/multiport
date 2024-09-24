@@ -2095,7 +2095,7 @@
         
         // looking for missing forwading info is esixt
 
-    	$exten = ".docx";$filename = "1.PREPARTIQUE PORT HEALTH".$exten;
+    	$exten = ".docx";$filename = "1.PREPARTIQUE PORT HEALTH 1 copy".$exten;
 		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/before_arrive/".$filename);
     	// $filename = $msl_num.".MV. ".$vessel."_29.INCOME TAX FORWARDING.docx";
 		
@@ -2136,7 +2136,7 @@
         
         // looking for missing forwading info is esixt
 
-    	$exten = ".docx";$filename = "2.VSL DECLARATION TO DTM".$exten;
+    	$exten = ".docx";$filename = "2.VSL DECLARATION TO DTM 2 copy".$exten;
 		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/before_arrive/".$filename);
     	// $filename = $msl_num.".MV. ".$vessel."_29.INCOME TAX FORWARDING.docx";
 		
@@ -2176,7 +2176,7 @@
         $rotation = $row1['rotation']; if(empty($rotation)){$rotation = "2024/_____";}
         // looking for missing forwading info is esixt
 		
-    	$exten = ".docx";$filename = "3.PORT IGM WITH FORWARDING".$exten;
+    	$exten = ".docx";$filename = "3.PORT IGM WITH FORWARDING 2 copy".$exten;
     	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/before_arrive/".$filename);
     	// $filename = $msl_num.".MV. ".$vessel."_28.PC FORWARDING_NEW.docx";
     	// set pc forwading values
@@ -2207,7 +2207,7 @@
         $rotation = $row1['rotation']; if(empty($rotation)){$rotation = "2024/_____";}
         // looking for missing forwading info is esixt
 		
-    	$exten = ".docx";$filename = "4. PLANT QUARENTINE WITH (1 IGM+ANCHORE PER.)".$exten;
+    	$exten = ".docx";$filename = "4. PLANT QUARENTINE WITH (1 IGM+ANCHORE PER.) 2 copy".$exten;
     	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/before_arrive/".$filename);
     	
     	$templateProcessor->setValues(
@@ -2238,7 +2238,7 @@
         $rotation = $row1['rotation']; if(empty($rotation)){$rotation = "2024/_____";}
         // looking for missing forwading info is esixt
 		
-    	$exten = ".docx";$filename = "5.P.O BOOKING TO CUSTOMS".$exten;
+    	$exten = ".docx";$filename = "5.P.O BOOKING TO CUSTOMS 3 copy".$exten;
     	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/before_arrive/".$filename);
     	
     	$templateProcessor->setValues(
@@ -2266,7 +2266,7 @@
         $rotation = $row1['rotation']; if(empty($rotation)){$rotation = "2024/_____";}
         // looking for missing forwading info is esixt
 		
-    	$exten = ".docx";$filename = "6......NEW".$exten;
+    	$exten = ".docx";$filename = "6......NEW 8copy".$exten;
     	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/before_arrive/".$filename);
     	
     	$templateProcessor->setValues(
@@ -2283,7 +2283,7 @@
 		$templateProcessor->saveAs($pathToSave);
 
 
-		$exten = ".docx";$filename = "6.APPILICATION OF SURVEYOR BOOKING".$exten;
+		$exten = ".docx";$filename = "6.APPILICATION OF SURVEYOR BOOKING 1 copy".$exten;
     	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/before_arrive/".$filename);
     	
     	$templateProcessor->setValues(
@@ -2606,5 +2606,70 @@
 		$pathToSave = "forwadings/auto_forwardings/".$filename;
 		$templateProcessor->saveAs($pathToSave);
 		header("location: vessel_details.php?ship_perticular=$msl_num");
+	}
+
+
+	function vsl_bl($msl_num = "100"){
+		GLOBAL $db; 
+		
+		$sql = "SELECT * FROM vessel_bl WHERE msl_num = '$msl_num' ";
+		// show dynamicsql
+		$run = mysqli_query($db, $sql); $total = 0;
+		while ($row = mysqli_fetch_assoc($run)) {
+			$id = $row['id']; //
+			$line_num = $row['line_num']; //
+			$bl_num = $row['bl_num']; //
+			$cargo_name = $row['cargo_name']; //
+			$cargo_qty = $row['cargo_qty']; //
+			$loadPortId = $row['load_port'];
+			$load_port = allData('loadport', $loadPortId, 'port_name');
+			$port_code = allData('loadport', $loadPortId, 'port_code');
+			$total = $total+$cargo_qty;
+			
+
+			echo "
+				<tr>
+					<th scope=\"row\">$line_num</th>
+					<td>
+						<a href=\"vessel_details.php?edit=$msl_num\">
+							$bl_num
+						</a>
+					</td>
+					<td>$cargo_name</td>
+					
+					<td style=\"text-align:left;\">
+						$load_port [ $port_code ]
+					</td>
+					<td>$cargo_qty MT</td>
+					<td scope=\"col\">
+						<a 
+							href=\"#\" 
+							style=\"text-decoration: none; padding: 5px;\"
+							data-toggle=\"modal\" data-target=\"#editBlInput$id\"
+						>
+							<span style=\"padding: 5px;\"><i class=\"bi bi-pencil\"></i> </span>
+						</a>
+						|
+						<a 
+							onClick=\"javascript: return confirm('Please confirm deletion');\"
+							href=\"vessel_details.php?blinputs=$msl_num&&bldelete=$id\" 
+							style=\"text-decoration: none; padding: 5px;\"
+						>
+							<span style=\"padding: 5px;\"><i class=\"bi bi-trash\"></i> </span>
+						</a>
+					</td>
+                </tr>
+			";
+		}
+		echo "
+			<tr>
+				<th scope=\"row\" colspan=\"5\" style=\"text-align:right;\">Total: &nbsp;</th>
+				<td>
+					<a href=\"vessel_details.php?edit=$msl_num\">
+						$total MT
+					</a>
+				</td>
+            </tr>
+		";
 	}
 ?>

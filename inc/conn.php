@@ -1,4 +1,10 @@
-<?php 
-	$db = mysqli_connect('localhost', 'root', '', 'multiport'); 
-	// $db = mysqli_connect('localhost', 'root', '', 'simulatedatabase'); 
+<?php
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'multiport';
+
+$db = new mysqli($host, $username, $password, $database);
+
+if($db->connect_error) {die('Connection failed: ' . $db->connect_error);}
 ?>

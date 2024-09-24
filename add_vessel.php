@@ -35,7 +35,7 @@
                         </div>
                         <div class="form-group col-md-3">
                           <label for="inputPassword4">Vessel Name</label>
-                          <input type="text" class="form-control" name="vessel_name" required placeholder="MV. SOMEHTING">
+                          <input type="text" class="form-control" name="vessel_name" required placeholder="SOMEHTING">
                         </div>
                         <div class="form-group col-md-2">
                           <label for="inputEmail4">Arrived</label>

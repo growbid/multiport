@@ -8,12 +8,12 @@
         <div class="page-header">
           <div class="container-fluid">
             <h2 class="h5 no-margin-bottom">
-              <span>Dashboard </span> <button type="button" class="btn btn-primary btn-sm" style="float: right;" data-bs-toggle="modal" data-bs-target="#exampleModal">Filter</button>
+              <span>Dashboard </span> <button type="button" class="btn btn-primary btn-sm" style="float: right;" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
             </h2>
           </div>
         </div>
         <!-- Modal Filter -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <div class="modal-header">

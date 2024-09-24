@@ -8,20 +8,37 @@
 
         <div class="page-header">
           <div class="container-fluid">
+
             <h2 class="h5 no-margin-bottom" style="text-align: center;">
-              <span style="float: left;">Dashboard</span>
+              <!-- <span style="float: left;">Dashboard</span> -->
               <!-- one line if else statement -->
               <?php //$msl_num = isset($_GET['edit']) ? $_GET['edit'] : $_GET['view']; ?>
               <?php 
                 if(isset($_GET['msl_num'])){$msl_num = $_GET['msl_num'];}
                 elseif(isset($_GET['edit'])){$msl_num = $_GET['edit'];} 
+                elseif(isset($_GET['blinputs'])){$msl_num = $_GET['blinputs'];} 
+                elseif(isset($_GET['forwadings'])){$msl_num = $_GET['forwadings'];} 
                 else{$msl_num = $_GET['ship_perticular'];}
 
                 $row0 = mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM vessels WHERE msl_num = '$msl_num' ")); $vessel = $row0['vessel_name'];
               ?>
-              <a href="vessel_details.php?ship_perticular=<?php echo $msl_num; ?>">
+              <!-- <a href="vessel_details.php?ship_perticular=<?php echo $msl_num; ?>">
                 FORWADINGS
-              </a>
+              </a> -->
+              <ul class="nav">
+                <li class="nav-item">
+                  <a class="nav-link disabled" href="#">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="vessel_details.php?ship_perticular=<?php echo $msl_num; ?>">Ship Perticular</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="vessel_details.php?forwadings=<?php echo $msl_num; ?>">Forwadings</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="vessel_details.php?blinputs=<?php echo $msl_num; ?>">BL Inputs</a>
+                </li>
+              </ul>
             </h2>
           </div>
         </div>
@@ -1497,7 +1514,7 @@
         <?php } ?>
 
         <!-- end elseif ship_perticular -->
-        <?php }else{ 
+        <?php }elseif(isset($_GET['ship_perticular'])){ 
           $msl_num = $_GET['ship_perticular'];
           $run3 = mysqli_query($db, "SELECT * FROM vessel_details WHERE msl_num = '$msl_num' ");
             $row3 = mysqli_fetch_assoc($run3);
@@ -2069,7 +2086,314 @@
 
 
         <!-- END SHIP PERTICULAR -->
+
+
+        <!-- blinputs -->
+        <?php } elseif(isset($_GET['blinputs'])){ ?>
+          <section class="no-padding-top no-padding-bottom">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="block">
+                  <?php //echo $msg; //include('inc/errors.php'); ?>
+                  <div class="title">
+                    <?php //echo $msg; //include('inc/errors.php'); ?>
+                    <strong>Vassel List</strong>
+
+                    <div id="toolbar" class="select" style="width: 30%; margin-left: 120px; margin-top: -35px; display: none;">
+                      <select class="form-control">
+                        <option value="">Export Basic</option>
+                        <option value="all">Export All</option>
+                        <option value="selected">Export Selected</option>
+                      </select>
+                    </div>
+
+                    <!-- add vassel modal and btn -->
+                    <button class="btn btn-success btn-sm" style="float: right;" data-toggle="modal" data-target="#addBl">+ ADD VASSEL</button>
+                    <!-- <a class="btn btn-success btn-sm" style="float: right;" href="add_vessel.php">+ ADD VASSEL</a> -->
+                  </div>
+
+                  <div class="table-responsive"> 
+                    <table 
+                      class="table table-dark table-striped table-sm"
+                    >
+                    
+
+                    <!-- <div id="bar" class="select" style="border: 1px solid white; display: none;">
+                      <select></select>
+                    </div> -->
+
+                      <thead>
+                        <tr role="row">
+                          <th>Line No</th>
+                          <th>BL No</th>
+                          <th>Cargo</th>
+                          <th>Loadport</th>
+                          <th>QTY</th>
+                          <th>Edit</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php 
+                          vsl_bl($msl_num); 
+                        ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <?php
+            $msl_num = $_GET['blinputs']; $line_num = mysqli_num_rows(mysqli_query($db, "SELECT * FROM vessel_bl WHERE msl_num = '$msl_num' ")) + 1;
+          ?>
+          <!-- Modal blinputs -->
+          <div class="modal fade" id="addBl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form method="post" action="vessel_details.php?blinputs=<?php echo $msl_num ?>">
+                  <input type="hidden" class="form-control" name="msl_num" required value="<?php echo "$msl_num"; ?>">
+                  <div class="modal-body">
+                    
+                    <div class="form-row">
+                      <div class="form-group col-md-1">
+                        <label for="inputState">Line No</label>
+                        <input type="text" class="form-control" name="line_num" required value="<?php echo "$line_num"; ?>">
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="inputState">Bl No</label>
+                        <input type="text" class="form-control" name="bl_num" required value="<?php echo "" ?>">
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="inputState">Qty</label>
+                        <input type="text" class="form-control" name="cargo_qty" required value="<?php echo "" ?>">
+                      </div>
+                      <div class="form-group col-md-7">
+                        <label for="inputState">Cargo</label>
+                        <input type="text" class="form-control" name="cargo_name" required value="<?php echo "" ?>">
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-5">
+                        <label for="inputState">Shipper Name</label>
+                        <input type="text" class="form-control" name="shipper_name" required value="<?php echo "" ?>">
+                      </div>
+
+                      <div class="form-group col-md-7">
+                        <label for="inputState">Shipper Address</label>
+                        <input type="text" class="form-control" name="shipper_address" value="<?php echo "" ?>">
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label for="inputState">Receiver</label>
+                        <select id="inputState" class="form-control search" name="receiver_name">
+                          <option value="">--SELECT--</option>
+                          <?php
+                            $run1 = mysqli_query($db, "SELECT * FROM bins WHERE type = 'IMPORTER' ");
+                            while ($row1 = mysqli_fetch_assoc($run1)) {
+                              $id = $row1['id']; $receiver_name = $row1['name'];
+                              echo"<option value=\"$id\">$receiver_name</option>";
+                            }
+                          ?>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-md-4">
+                        <label for="inputState">Bank</label>
+                        <select id="inputState" class="form-control search" name="bank_name">
+                          <option value="">--SELECT--</option>
+                          <?php
+                            $run2 = mysqli_query($db, "SELECT * FROM bins WHERE type = 'BANK' ");
+                            while ($row2 = mysqli_fetch_assoc($run2)) {
+                              $idImporter = $row2['id']; $bank_name = $row2['name'];
+                              echo"<option value=\"$idImporter\">$bank_name</option>";
+                            }
+                          ?>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputState">Load Port</label>
+                        <select class="form-control search" name="load_port">
+                          <option value="">--SELECT--</option>
+                          <?php selectOptions("loadport","port_name"); ?>
+                        </select>
+                      </div>
+
+                    </div> 
+
+                      
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" name="blinput" class="btn btn-primary">+ ADD</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        <!-- END BLINPUTS -->
+
+
+        <?php
+          $total = 0;
+          // edit blinput
+          $run = mysqli_query($db, "SELECT * FROM vessel_bl WHERE msl_num = '$msl_num'");
+          while ($row = mysqli_fetch_assoc($run)) {
+            $id = $row['id']; //
+            $line_num = $row['line_num']; //
+            $bl_num = $row['bl_num']; //
+            $cargo_name = $row['cargo_name']; //
+            $cargo_qty = $row['cargo_qty']; //
+            $loadPortId = $row['load_port'];
+            $receiverId = $row['receiver_name'];
+            $bankId = $row['bank_name'];
+            $shipper_name = $row['shipper_name'];
+            $shipper_address = $row['shipper_address'];
+            $load_port = allData('loadport', $loadPortId, 'port_name');
+            $port_code = allData('loadport', $loadPortId, 'port_code');
+            $receiver_name = allData('bins', $receiverId, 'name');
+            $bank_name = allData('bins', $bankId, 'name');
+            $total = $total+$cargo_qty;
+        ?>
+        <!-- Consignee Edit Modal -->
+        <div class="modal fade" id="<?php echo"editBlInput".$id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Edit BL Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form method="post" action="vessel_details.php?blinputs=<?php echo $msl_num ?>">
+                  <input type="hidden" class="form-control" name="msl_num" required value="<?php echo "$msl_num"; ?>">
+                  <input type="hidden" class="form-control" name="blinputid" required value="<?php echo "$id"; ?>">
+                  <div class="modal-body">
+                    
+                    <div class="form-row">
+                      <div class="form-group col-md-1">
+                        <label for="inputState">Line No</label>
+                        <input type="text" class="form-control" name="line_num" required value="<?php echo "$line_num"; ?>">
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="inputState">Bl No</label>
+                        <input type="text" class="form-control" name="bl_num" required value="<?php echo "$bl_num" ?>">
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="inputState">Qty</label>
+                        <input type="text" class="form-control" name="cargo_qty" required value="<?php echo "$cargo_qty" ?>">
+                      </div>
+                      <div class="form-group col-md-7">
+                        <label for="inputState">Cargo</label>
+                        <input type="text" class="form-control" name="cargo_name" required value="<?php echo "$cargo_name" ?>">
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-5">
+                        <label for="inputState">Shipper Name</label>
+                        <input type="text" class="form-control" name="shipper_name" required value="<?php echo "$shipper_name" ?>">
+                      </div>
+
+                      <div class="form-group col-md-7">
+                        <label for="inputState">Shipper Address</label>
+                        <input type="text" class="form-control" name="shipper_address" value="<?php echo "$shipper_address" ?>">
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label for="inputState">Receiver</label>
+                        <select id="inputState" class="form-control search" name="receiver_name">
+                          <option value="<?php echo $receiverId ?>"><?php echo $receiver_name; ?></option>
+                          <?php
+                            $run1 = mysqli_query($db, "SELECT * FROM bins WHERE type = 'IMPORTER' ");
+                            while ($row1 = mysqli_fetch_assoc($run1)) {
+                              $id = $row1['id']; $receiver_name = $row1['name'];
+                              echo"<option value=\"$id\">$receiver_name</option>";
+                            }
+                          ?>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-md-4">
+                        <label for="inputState">Bank</label>
+                        <select id="inputState" class="form-control search" name="bank_name">
+                          <option value="<?php echo $bankId ?>"><?php echo $bank_name; ?></option>
+                          <?php
+                            $run2 = mysqli_query($db, "SELECT * FROM bins WHERE type = 'BANK' ");
+                            while ($row2 = mysqli_fetch_assoc($run2)) {
+                              $idImporter = $row2['id']; $bank_name = $row2['name'];
+                              echo"<option value=\"$idImporter\">$bank_name</option>";
+                            }
+                          ?>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputState">Load Port</label>
+                        <select class="form-control search" name="load_port">
+                          <option value="<?php echo $loadPortId ?>"><?php echo $load_port; ?></option>
+                          <?php selectOptions("loadport","port_name"); ?>
+                        </select>
+                      </div>
+
+                    </div> 
+
+                      
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" name="blupdate" class="btn btn-primary">+ Update</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </form>
+            </div>
+          </div>
+        </div>
         <?php } ?>
+        <!-- end editblinput -->
+
+
+        <?php } else{ ?>
+          <section class="no-padding-top">
+            <div class="container-fluid">
+              <div class="row">
+                
+                <!-- Form Elements -->
+                <div class="col-lg-12">
+                  <div class="block">
+                    <div class="title">
+                      <strong>Blank Page</strong>
+                      <!-- <a 
+                        onClick="javascript: return confirm('Please confirm deletion');" 
+                        href="index.php?del_msl_num=<?php echo $msl_num; ?>" 
+                        class="btn btn-danger btn-sm"
+                         style="float: right;"
+                      ><i class="bi bi-trash"></i></a> -->
+                      <a href="vessel_details.php?edit=<?php echo $msl_num; ?>" class="btn btn-secondary btn-sm" style="float: right; margin-right: 10px;">
+                        <i class="icon-ink"></i> <-Back
+                      </a>
+                    </div>
+
+                    <div class="block-body">
+                      Blank content
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        <?php } ?>
+
 
 
 

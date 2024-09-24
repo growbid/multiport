@@ -1111,9 +1111,9 @@
           </div>
 
           <?php
-            $run = mysqli_query($db, "SELECT * FROM cnf_contacts"); $num = 0;
+            $run = mysqli_query($db, "SELECT * FROM cnf_contacts");
             while ($row = mysqli_fetch_assoc($run)) {
-              $id = $row['id']; $name = $row['name']; $contact = $row['contact']; $num++;
+              $id = $row['id']; $name = $row['name']; $contact = $row['contact'];
               $company = $row['company']; $company_name = allData('cnf', $company, 'name');
           ?>
           <!-- Stevedore Edit Modal -->
@@ -1127,7 +1127,7 @@
                   </button>
                 </div>
 
-                <form method="post" action="3rd_parties.php?cnfview=<?php echo $id; ?>">
+                <form method="post" action="3rd_parties.php?cnfview=<?php echo $_GET['cnfview']; ?>">
                   <input type="hidden" name="rowId" value="<?php echo $id; ?>">
                   <div class="modal-body">
                       <div class="form-group">
