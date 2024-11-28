@@ -462,6 +462,10 @@
                                   <label for="exampleInputEmail1">CNF</label>
                                   <input type="text" name="cnfName" class="form-control" placeholder="CNF Name">
                                 </div>
+                                <div class="form-group">
+                                  <label for="exampleInputEmail1">Email</label>
+                                  <input type="email" name="cnfEmail" class="form-control" placeholder="Email">
+                                </div>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -480,6 +484,7 @@
                         <tr>
                           <th scope="col">#</th>
                           <th scope="col">Name</th>
+                          <th scope="col">Email</th>
                           <th scope="col" style="text-align: center;">Actions</th>
                           <!-- <th scope="col">Handle</th> -->
                         </tr>
@@ -500,6 +505,7 @@
             while ($row3 = mysqli_fetch_assoc($run3)) {
               $id = $row3['id'];
               $name = $row3['name'];
+              $email = $row3['email'];
           ?>
           <!-- CNF Edit Modal -->
           <div class="modal fade" id="<?php echo"editCnf".$id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -512,12 +518,16 @@
                   </button>
                 </div>
 
-                <form method="post" action="3rd_parties.php?page=consignee">
+                <form method="post" action="3rd_parties.php?page=cnf">
                   <div class="modal-body">
                       <div class="form-group">
                         <label for="exampleInputEmail1">CNF</label>
                         <input type="hidden" name="cnfId" value="<?php echo $id; ?>">
                         <input type="text" name="cnfName" value="<?php echo $name; ?>" class="form-control" placeholder="CNF Name">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">Email</label>
+                        <input type="text" name="cnfEmail" value="<?php echo $email; ?>" class="form-control" placeholder="Email">
                       </div>
                   </div>
                   <div class="modal-footer">
@@ -1076,6 +1086,12 @@
                                     <input type="text" name="contact_number" class="form-control" required="">
                                   </div>
                                 </div>
+                                <div class="form-row">
+                                  <div class="form-group col-md-12">
+                                    <label for="exampleInputEmail1">Contact Two</label>
+                                    <input type="text" name="contact_2" class="form-control">
+                                  </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -1094,7 +1110,8 @@
                         <tr>
                           <th scope="col">#</th>
                           <th scope="col">Contact Person</th>
-                          <th scope="col">Contact Number</th>
+                          <th scope="col">Contact</th>
+                          <th scope="col">Contact 2</th>
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
@@ -1113,7 +1130,8 @@
           <?php
             $run = mysqli_query($db, "SELECT * FROM cnf_contacts");
             while ($row = mysqli_fetch_assoc($run)) {
-              $id = $row['id']; $name = $row['name']; $contact = $row['contact'];
+              $id = $row['id']; $name = $row['name']; $contact_2 = $row['contact_2'];
+              $contact = $row['contact'];
               $company = $row['company']; $company_name = allData('cnf', $company, 'name');
           ?>
           <!-- Stevedore Edit Modal -->
@@ -1133,6 +1151,10 @@
                       <div class="form-group">
                         <label for="exampleInputEmail1">Contact Person</label>
                         <input type="text" name="contact_person" value="<?php echo $name; ?>" class="form-control" placeholder="Contact Person">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">Email</label>
+                        <input type="text" name="contact_2" value="<?php echo $contact_2; ?>" class="form-control" placeholder="Email">
                       </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">Contact Number</label>

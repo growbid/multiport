@@ -156,6 +156,67 @@
           </div>
         </section>
         <?php } elseif(isset($_GET['page']) && $_GET['page'] == 'stevedore'){ ?>
+
+
+        <section class="no-padding-top no-padding-bottom">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="block">
+                  <?php //echo $msg; //include('inc/errors.php'); ?>
+                  <div class="title">
+                    <?php echo $msg; //include('inc/errors.php'); ?>
+                    <strong>Stevedore wise Vassel List of 2024</strong>
+
+                    <div id="toolbar" class="select" style="width: 30%; margin-left: 120px; margin-top: -35px; display: none; ">
+                      <select class="form-control">
+                        <option value="">Export Basic</option>
+                        <option value="all">Export All</option>
+                        <option value="selected">Export Selected</option>
+                      </select>
+                    </div>
+
+                    <!-- add vassel modal and btn -->
+                    <!-- <button class="btn btn-success btn-sm" style="float: right;" data-toggle="modal" data-target="#addVassel">+ ADD VASSEL</button> -->
+                    <!-- <a class="btn btn-success btn-sm" style="float: right;" href="add_vessel.php">+ ADD VASSEL</a> -->
+                  </div>
+
+                  <div class="table-responsive"> 
+                    <table 
+                      id="example" 
+                      class="table table-dark table-border table-sm"
+                      data-show-export="false"
+                      data-show-columns="false"
+                    >
+                    
+
+                    <!-- <div id="bar" class="select" style="border: 1px solid white; display: none;">
+                      <select></select>
+                    </div> -->
+
+                      <thead>
+                        <tr role="row">
+                          <th>SL</th>
+                          <th>Stevedore</th>
+                          <th>MSL</th>
+                          <th>VASSEL NAME</th>
+                          <th>QTY</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php 
+                          stevedorewise();
+                        ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
         <?php } else{ ?>
         <?php } ?>
         

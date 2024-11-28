@@ -1,5 +1,33 @@
 <?php
 	include('inc/functions.php');
+
+	$msl_num = 216;
+
+	// get vessel data
+    $row9=mysqli_fetch_assoc(mysqli_query($db,"SELECT*FROM vessels WHERE msl_num='$msl_num'"));
+    $vessel = $row9['vessel_name']; 
+    $rotation = $row9['rotation']; 
+    $arr_date = $row9['arrived'];
+
+
+    $year = date("Y"); $month = date("m"); $day = date("d");
+    $vsl_year = dbtime($arr_date, "Y");
+    $vsl_month = dbtime($arr_date, "m");
+    $vsl_day = dbtime($arr_date, "d");
+    // $arrived = dbtime($arr_date, "d.m.Y");
+    $arrived = $vsl_day.".".$vsl_month.".".$vsl_year;
+    echo "Date: ".$arr_date." Day: ".$vsl_day." rotation: ". $rotation ."</br>";
+
+
+	$total_qty = 0;
+		$run4 = mysqli_query($db, "SELECT * FROM vessels_bl WHERE msl_num = '$msl_num' ");
+		while ($raw4 = mysqli_fetch_assoc($run4)) {
+			$total_qty += (float)$raw4['cargo_qty'];
+		}
+		echo formatIndianNumber($total_qty); echo "</br>";
+		echo $total_qty_kg = formatIndianNumber($total_qty*1000);
+	// echo dbtime($date, "d-m-Y"); 
+	echo"</br>";
 		// prepare backup files
 		// scan folder for all files
 		$sourceFolderPath = 'inc/db_backups/factory-recovery';
@@ -261,8 +289,8 @@
 	// }
 
 	// Example usage
-	$vsl_nrt = 21224;
-	echo "Number to Word: ".$vsl_nrt." = ".strtoupper(numberToWords($vsl_nrt*10));  // Output: Two lakh twelve thousand two hundred forty only
+	$vsl_nrt = 232.100;
+	echo "Number to Word: ".$vsl_nrt." = ".strtoupper(numberToWords($vsl_nrt));  // Output: Two lakh twelve thousand two hundred forty only
 	echo "<hr/>";
 
 	$number = 100000;

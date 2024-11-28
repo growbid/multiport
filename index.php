@@ -298,7 +298,7 @@
                 <div class="statistic-block block">
                   <div class="progress-details d-flex align-items-end justify-content-between">
                     <div class="title">
-                      <div class="icon"><i class="icon-user-1"></i></div><strong><a href="index.php">Total</a></strong>
+                      <div class="icon"><i class="icon-user-1"></i></div><strong><a href="index.php?view=all">Total</a></strong>
                     </div>
                     <div class="number dashtext-1">
                       <?php echo rawcount("vessels"); ?>
@@ -364,8 +364,9 @@
                       </thead>
                       <tbody>
                         <?php 
-                          $key = "all";
+                          // $key = "all";
                           if (isset($_GET['view'])) {$key = $_GET['view']; }
+                          else{$key = "default";}
                           if (isset($_GET['year'])) {$key = $_GET['year']; }
                           allVessels($key, $query); 
                         ?>

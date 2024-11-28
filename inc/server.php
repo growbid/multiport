@@ -241,7 +241,7 @@
 			$run = mysqli_query($db, $sql);
 			if ($run) {
 				$msl_num = lastData("vessels", "msl_num");
-				mysqli_query($db, "INSERT INTO vessel_details(msl_num, with_retention) VALUES('$msl_num', 'IN-BALAST')");
+				mysqli_query($db, "INSERT INTO vessel_details(msl_num, with_retention) VALUES('$msl_num', 'IN-BALLAST')");
 				header("location: vessel_details.php?msl_num=$msl_num");
 			}
 			else{ $msg = alertMsg("Sorry, Something went wrong inserting data!", "danger"); }
@@ -449,7 +449,7 @@
 			if ($run) {
 				$msg = alertMsg("Updated Successfully! Vsl: $vesselId, Msl: $msl_num", "success");
 
-				// check and add to vessels_urveyor table if new survey company added
+				// check and add to vessels_surveyor table if new survey company added
 				if (!empty($survey_custom)) {
 					// check if survey supplier not exists in vessels surviour table
 					if(!exist("vessels_surveyor","msl_num = ".$msl_num." AND survey_party = 'survey_custom' AND survey_purpose = 'Load Draft' ")){
@@ -599,16 +599,14 @@
 		$msl_num = $_GET['del_msl_num'];
 
 		// delete vessel
-		mysqli_query($db, "DELETE FROM vessels WHERE msl_num = '$msl_num' ");
+		mysqli_query($db, "DELETE FROM vessels WHERE msl_num = '$msl_num' ");//
 
 		// delete all vessels related data
-		mysqli_query($db, "DELETE FROM vessel_details WHERE msl_num = '$msl_num' ");
-		mysqli_query($db, "DELETE FROM vessels_cargo WHERE msl_num = '$msl_num' ");
-		mysqli_query($db, "DELETE FROM vessels_importer WHERE msl_num = '$msl_num' ");
-		mysqli_query($db, "DELETE FROM vessels_loadport WHERE msl_num = '$msl_num' ");
-		mysqli_query($db, "DELETE FROM vessels_remarks WHERE msl_num = '$msl_num' ");
-		mysqli_query($db, "DELETE FROM vessels_stevedore WHERE msl_num = '$msl_num' ");
-		mysqli_query($db, "DELETE FROM vessels_surveyor WHERE msl_num = '$msl_num' ");
+		mysqli_query($db, "DELETE FROM vessels_bl WHERE msl_num = '$msl_num' ");//
+		mysqli_query($db, "DELETE FROM vessels_cargo WHERE msl_num = '$msl_num' ");//
+		mysqli_query($db, "DELETE FROM vessels_importer WHERE msl_num = '$msl_num' ");//
+		mysqli_query($db, "DELETE FROM vessels_surveyor WHERE msl_num = '$msl_num' ");//
+		mysqli_query($db, "DELETE FROM vessel_details WHERE msl_num = '$msl_num' ");//
 
 		// redirect to homepage
 		header('location: index.php');
@@ -1108,7 +1106,8 @@
 	//add cnf
 	if (isset($_POST['addCnf'])) {
 		$cnfName = mysqli_real_escape_string($db, $_POST['cnfName']);
-		$sql = "INSERT INTO cnf(name) VALUES('$cnfName')";
+		$cnfEmail = mysqli_real_escape_string($db, $_POST['cnfEmail']);
+		$sql = "INSERT INTO cnf(name, email) VALUES('$cnfName','$cnfEmail')";
 		$run=mysqli_query($db,$sql);if($run){$msg=alertMsg("Cnf Added Successfully!","success");}
 		else{ $msg = alertMsg("Something went wrong, Couldn't incert data!", "danger"); }
 		// header('location: 3rd_parties.php?page=consignee');
@@ -1118,7 +1117,8 @@
 	if (isset($_POST['editCnf'])) {
 		$cnfId = mysqli_real_escape_string($db, $_POST['cnfId']);
 		$cnfName = mysqli_real_escape_string($db, $_POST['cnfName']);
-		$sql = "UPDATE cnf SET name = '$cnfName' WHERE id = '$cnfId' ";
+		$cnfEmail = mysqli_real_escape_string($db, $_POST['cnfEmail']);
+		$sql = "UPDATE cnf SET name = '$cnfName', email = '$cnfEmail' WHERE id = '$cnfId' ";
 		if(mysqli_query($db, $sql)){ $msg = alertMsg("CNF Updated Successfully!", "success");}
 		else{ $msg = alertMsg("Something went wrong, Couldn't incert data!", "danger");}
 	}
@@ -1234,11 +1234,12 @@
 	if (isset($_POST['addCnfContacts'])) {
 		$company = mysqli_real_escape_string($db, $_POST['cnfcompanyId']);
 		$contact_person = strtolower(mysqli_real_escape_string($db, $_POST['contact_person']));
+		$contact_2 = strtolower(mysqli_real_escape_string($db, $_POST['contact_2']));
 		$contact_number = mysqli_real_escape_string($db, $_POST['contact_number']);
 		$check = mysqli_query($db, "SELECT * FROM cnf_contacts WHERE name = '$contact_person' ");
 		if (mysqli_num_rows($check) > 0) { $msg = alertMsg("Exist Already!", "danger"); }
 		else{
-			$sql = "INSERT INTO cnf_contacts(company, name, contact, status) VALUES('$company', '$contact_person', '$contact_number', '')";
+			$sql = "INSERT INTO cnf_contacts(company, name, contact_2, contact, status) VALUES('$company', '$contact_person', 'contact_2', '$contact_number', '')";
 			if(mysqli_query($db, $sql)){$msg = alertMsg("Added Successfully!", "success");}
 			else{$msg = alertMsg("Something went wrong, Couldn't incert data!", "danger");}// header('location: 3rd_parties.php?page=stevedore');	
 		}
@@ -1248,11 +1249,12 @@
 	if (isset($_POST['editCnfContact'])) {
 		$rowId = mysqli_real_escape_string($db, $_POST['rowId']);
 		$contact_person = strtolower(mysqli_real_escape_string($db, $_POST['contact_person']));
+		$contact_2 = strtolower(mysqli_real_escape_string($db, $_POST['contact_2']));
 		$contact_number = mysqli_real_escape_string($db, $_POST['contact_number']);
 		$check = mysqli_query($db, "SELECT * FROM cnf_contacts WHERE name = '$contact_person' AND id != '$rowId' ");
 		if (mysqli_num_rows($check) > 0) { $msg = alertMsg("Exist Already!", "danger"); }
 		else{
-			$sql = "UPDATE cnf_contacts SET name = '$contact_person', contact = '$contact_number' WHERE id = '$rowId' ";
+			$sql = "UPDATE cnf_contacts SET name = '$contact_person', contact_2 = '$contact_2', contact = '$contact_number' WHERE id = '$rowId' ";
 			if(mysqli_query($db, $sql)){$msg = alertMsg("Updated Successfully!", "success");}
 			else{$msg = alertMsg("Something went wrong, Couldn't Update data!", "danger");}
 			// header('location: 3rd_parties.php?page=stevedore');	
@@ -1581,45 +1583,45 @@
 	}
 
 
-	//add cargo
-	if (isset($_POST['addCargoConsigneewise'])) {
-		$vesselId = mysqli_real_escape_string($db, $_POST['vesselId']);
-		$msl_num = allData("vessels", $vesselId, "msl_num");
-		$loadport = mysqli_real_escape_string($db, $_POST['loadport']);
-		$quantity = mysqli_real_escape_string($db, $_POST['quantity']);
-		$cargokey = mysqli_real_escape_string($db, $_POST['cargokey']);
-		$cargo_bl_name = mysqli_real_escape_string($db, $_POST['cargo_bl_name']);
+	// //add cargo
+	// if (isset($_POST['addCargoConsigneewise'])) {
+	// 	$vesselId = mysqli_real_escape_string($db, $_POST['vesselId']);
+	// 	$msl_num = allData("vessels", $vesselId, "msl_num");
+	// 	$loadport = mysqli_real_escape_string($db, $_POST['loadport']);
+	// 	$quantity = mysqli_real_escape_string($db, $_POST['quantity']);
+	// 	$cargokey = mysqli_real_escape_string($db, $_POST['cargokey']);
+	// 	$cargo_bl_name = mysqli_real_escape_string($db, $_POST['cargo_bl_name']);
 		
-    	if(empty($vesselId)||empty($loadport)||empty($quantity)||empty($cargokey)||empty($cargo_bl_name)){$msg=alertMsg("Some field is empty!","danger");}
-    	else{
-    		$sql = "INSERT INTO vessels_cargo(msl_num, cargo_key, loadport, quantity, cargo_bl_name) VALUES('$msl_num', '$cargokey', '$loadport', '$quantity', '$cargo_bl_name')";
-			if(mysqli_query($db, $sql)){$msg=alertMsg("Added Successfully!","success");}
-			else{$msg=alertMsg("Couldn't incert data!","danger");}
-			// header('location: 3rd_parties.php?page=stevedore');	
-    	}
-	}
+ //    	if(empty($vesselId)||empty($loadport)||empty($quantity)||empty($cargokey)||empty($cargo_bl_name)){$msg=alertMsg("Some field is empty!","danger");}
+ //    	else{
+ //    		$sql = "INSERT INTO vessels_cargo(msl_num, cargo_key, loadport, quantity, cargo_bl_name) VALUES('$msl_num', '$cargokey', '$loadport', '$quantity', '$cargo_bl_name')";
+	// 		if(mysqli_query($db, $sql)){$msg=alertMsg("Added Successfully!","success");}
+	// 		else{$msg=alertMsg("Couldn't incert data!","danger");}
+	// 		// header('location: 3rd_parties.php?page=stevedore');	
+ //    	}
+	// }
 
-	//edit 
-	if (isset($_POST['updateCargoConsigneewise'])) {
-		$id = mysqli_real_escape_string($db, $_POST['id']);
-		$msl_num = mysqli_real_escape_string($db, $_POST['msl_num']);
-		$loadport = mysqli_real_escape_string($db, $_POST['loadport']);
-		$quantity = mysqli_real_escape_string($db, $_POST['quantity']);
-		$cargokey = mysqli_real_escape_string($db, $_POST['cargokey']);
-		$cargo_bl_name = mysqli_real_escape_string($db, $_POST['cargo_bl_name']);
-		$sql = "UPDATE vessels_cargo SET cargo_key = '$cargokey', loadport = '$loadport', quantity = '$quantity', cargo_bl_name = '$cargo_bl_name' WHERE id = '$id' ";
-		if(mysqli_query($db, $sql)){$msg=alertMsg("Updated successfully!","success");}
-		else{$msg=alertMsg("Couldn't update data!","danger");}
-		// header('location: 3rd_parties.php?page=stevedore');	
-	}
+	// //edit 
+	// if (isset($_POST['updateCargoConsigneewise'])) {
+	// 	$id = mysqli_real_escape_string($db, $_POST['id']);
+	// 	$msl_num = mysqli_real_escape_string($db, $_POST['msl_num']);
+	// 	$loadport = mysqli_real_escape_string($db, $_POST['loadport']);
+	// 	$quantity = mysqli_real_escape_string($db, $_POST['quantity']);
+	// 	$cargokey = mysqli_real_escape_string($db, $_POST['cargokey']);
+	// 	$cargo_bl_name = mysqli_real_escape_string($db, $_POST['cargo_bl_name']);
+	// 	$sql = "UPDATE vessels_cargo SET cargo_key = '$cargokey', loadport = '$loadport', quantity = '$quantity', cargo_bl_name = '$cargo_bl_name' WHERE id = '$id' ";
+	// 	if(mysqli_query($db, $sql)){$msg=alertMsg("Updated successfully!","success");}
+	// 	else{$msg=alertMsg("Couldn't update data!","danger");}
+	// 	// header('location: 3rd_parties.php?page=stevedore');	
+	// }
 
-	// delete 
-	if (isset($_GET['delVesselCargoCon'])) {
-		$del = $_GET['delVesselCargoCon']; $msl_num = $_GET['edit'];
-		$run = mysqli_query($db, "DELETE FROM vessels_cargo WHERE id = $del ");
-		if($run){$msg=alertMsg("Deleted successfully!","success");} 
-		header("location: vessel_details.php?edit=$msl_num");
-	}
+	// // delete 
+	// if (isset($_GET['delVesselCargoCon'])) {
+	// 	$del = $_GET['delVesselCargoCon']; $msl_num = $_GET['edit'];
+	// 	$run = mysqli_query($db, "DELETE FROM vessels_cargo WHERE id = $del ");
+	// 	if($run){$msg=alertMsg("Deleted successfully!","success");} 
+	// 	header("location: vessel_details.php?edit=$msl_num");
+	// }
 
 
 
@@ -1784,6 +1786,7 @@
 			$frm_date = mysqli_real_escape_string($db, $_POST['frm_date']);
 			$to_date = mysqli_real_escape_string($db, $_POST['to_date']);
 			$dates =  explode(",", $frm_date.",".$to_date);
+			// print_r($dates);
 		}
 
 		// set the array tor filter
@@ -1859,7 +1862,7 @@
         $capt_name = mysqli_real_escape_string($db, $_POST['capt_name']);
         $number_of_crew = mysqli_real_escape_string($db, $_POST['number_of_crew']);
 
-        if (empty($with_retention)) { $with_retention = "IN-BALAST"; }
+        if (empty($with_retention)) { $with_retention = "IN-BALLAST"; }
         if (empty($vsl_nature)) { $vsl_nature = "BULK"; }
 
 
@@ -1869,12 +1872,120 @@
 	}
 
 
+	// blinput
+	//add bl
+	if (isset($_POST['blinput'])) {
+		$msl_num = $_POST['msl_num']; 
+		$line_num = mysqli_real_escape_string($db, $_POST['line_num']);
+		$bl_num = mysqli_real_escape_string($db, $_POST['bl_num']);
+		$cargo_qty = mysqli_real_escape_string($db, $_POST['cargo_qty']);
+		$cargokeyId = mysqli_real_escape_string($db, $_POST['cargokey']);
+		$cargo_name = mysqli_real_escape_string($db, $_POST['cargo_name']);
+		$shipper_name = mysqli_real_escape_string($db, $_POST['shipper_name']);
+		$shipper_address = mysqli_real_escape_string($db, $_POST['shipper_address']);
+		$receiver_id = mysqli_real_escape_string($db, $_POST['receiver_name']);
+		$bank_id = mysqli_real_escape_string($db, $_POST['bank_name']);
+		$load_port = mysqli_real_escape_string($db, $_POST['load_port']);
+		$desc_port = mysqli_real_escape_string($db, $_POST['desc_port']);
+		$issue_date = mysqli_real_escape_string($db, $_POST['issue_date']);
+
+		// check if member already sinked
+    	$run=mysqli_query($db, "SELECT * FROM vessels_bl WHERE msl_num = '$msl_num' AND bl_num = '$bl_num' ");
+    	if(empty($bl_num)){$msg = alertMsg("Enter Bl Number!", "danger");}
+    	elseif(mysqli_num_rows($run)>0){$msg=alertMsg("Bl Number Already Exist!", "danger");}
+    	else{
+    		$sql = "INSERT INTO vessels_bl(msl_num, line_num, bl_num, shipper_name, shipper_address, receiver_name, bank_name, load_port, desc_port, cargo_name, cargokeyId, cargo_qty, issue_date) VALUES('$msl_num', '$line_num', '$bl_num', '$shipper_name', '$shipper_address', '$receiver_id', '$bank_id', '$load_port', '$desc_port', '$cargo_name', '$cargokeyId', '$cargo_qty', '$issue_date')";
+			if(mysqli_query($db, $sql)){$msg = alertMsg("Bl added successfully!", "success");}
+			else{$msg = alertMsg("Please select bin type!", "danger");}
+			// header('location: 3rd_parties.php?page=stevedore');	
+    	}
+	}
+
+
+	//edit bl
+	if (isset($_POST['blupdate'])) {
+		$rawid = $_POST['blinputid']; $msl_num = $_POST['msl_num']; 
+		$line_num = mysqli_real_escape_string($db, $_POST['line_num']);
+		$bl_num = mysqli_real_escape_string($db, $_POST['bl_num']);
+		$cargo_qty = mysqli_real_escape_string($db, $_POST['cargo_qty']);
+		$cargo_name = mysqli_real_escape_string($db, $_POST['cargo_name']);
+		$cargokeyId = mysqli_real_escape_string($db, $_POST['cargokey']);
+		$shipper_name = mysqli_real_escape_string($db, $_POST['shipper_name']);
+		$shipper_address = mysqli_real_escape_string($db, $_POST['shipper_address']);
+		$receiver_id = mysqli_real_escape_string($db, $_POST['receiver_name']);
+		$bank_id = mysqli_real_escape_string($db, $_POST['bank_name']);
+		$load_port = mysqli_real_escape_string($db, $_POST['load_port']);
+		$desc_port = mysqli_real_escape_string($db, $_POST['desc_port']);
+		$issue_date = mysqli_real_escape_string($db, $_POST['issue_date']);
+		if(!isset($issue_date)||empty($issue_date)){$issue_date=allData('vessels_bl',$rawid,'issue_date');}
+
+		// check if member already sinked
+    	$run=mysqli_query($db, "SELECT * FROM vessels_bl WHERE msl_num = '$msl_num' AND bl_num = '$bl_num' AND id != '$rawid' ");
+    	if(empty($bl_num)){$msg = alertMsg("Enter Bl Number!", "danger");}
+    	elseif(mysqli_num_rows($run)>0){$msg=alertMsg("Bl Number Already Exist!", "danger");}
+    	else{
+    		// $sql = "INSERT INTO vessels_bl(msl_num, line_num, bl_num, shipper_name, shipper_address, receiver_name, bank_name, load_port, cargo_name, cargo_qty) VALUES('$msl_num', '$line_num', '$bl_num', '$shipper_name', '$shipper_address', '$receiver_id', '$bank_id', '$load_port', '$cargo_name', '$cargo_qty')";
+    		$sql = "UPDATE vessels_bl SET line_num = '$line_num', bl_num = '$bl_num', shipper_name = '$shipper_name', shipper_address = '$shipper_address', receiver_name = '$receiver_id', bank_name = '$bank_id', load_port = '$load_port', desc_port = '$desc_port', cargo_name = '$cargo_name', cargokeyId = '$cargokeyId', cargo_qty = '$cargo_qty', issue_date = '$issue_date' WHERE id = '$rawid' ";
+			if(mysqli_query($db, $sql)){$msg = alertMsg("Bl Updated successfully!", "success");}
+			else{$msg = alertMsg("Please select bin type!", "danger");}
+			// header('location: 3rd_parties.php?page=stevedore');	
+    	}
+	}
+
+
+
+
+
+
+	//edit bl
+	if (isset($_POST['doupdate'])) {
+		$rawid = $_POST['doinputid']; $msl_num = $_POST['msl_num']; 
+		$c_num = mysqli_real_escape_string($db, $_POST['c_num']);
+		$c_date = mysqli_real_escape_string($db, $_POST['c_date']);
+		$c_cargoname = mysqli_real_escape_string($db, $_POST['c_cargoname']);
+		$cnfId = mysqli_real_escape_string($db, $_POST['cnfId']);
+
+		// check if member already sinked
+    	$run=mysqli_query($db, "SELECT * FROM vessels_bl WHERE msl_num = '$msl_num' AND c_num = '$c_num' AND id != '$rawid' ");
+    	if(mysqli_num_rows($run)>0){$msg=alertMsg("C Number Already Exist!", "danger");}
+    	elseif($cnfId == 0 || empty($cnfId)){$msg=alertMsg("CNF Missing! cnf: $cnfId", "danger");}
+    	else{
+    		$sql = "UPDATE vessels_bl SET c_num = '$c_num', c_date = '$c_date', c_cargoname = '$c_cargoname', cnf_name = '$cnfId' WHERE id = '$rawid' ";
+			if(mysqli_query($db, $sql)){$msg = alertMsg("Do Updated successfully!", "success");}
+			else{$msg = alertMsg("Something Went Wrong!", "danger");}
+    	}
+	}
+
+	if (isset($_GET['bldelete'])) {
+		$delid = $_GET['bldelete']; $msl_num = $_GET['blinputs'];
+		if (mysqli_query($db, "DELETE FROM vessels_bl WHERE id = '$delid' ")) {
+			header("location: vessel_details.php?blinputs=$msl_num");
+		}else{$msg = alertMsg("Couldn't Delete Bl, Something Wrong!", "danger");}
+	}
+
+
 	//export forwadings
-	if (isset($_POST['export_vsl_forwadings'])) {
+	if (isset($_POST['export_vsl_forwadings']) || isset($_GET['exportdo'])) {
 		$year = date("Y"); $month = date("m"); $day = date("d");
-		$btnVal = $_POST['export_vsl_forwadings']; $filename = "";
-		$ship_perticularId = mysqli_real_escape_string($db, $_POST['ship_perticularId']);
-		$msl_num = mysqli_real_escape_string($db, $_POST['msl_num']);
+
+		if (isset($_POST['export_vsl_forwadings'])) {
+			$btnVal = $_POST['export_vsl_forwadings']; $filename = "";
+			$ship_perticularId = mysqli_real_escape_string($db, $_POST['ship_perticularId']);
+			$msl_num = mysqli_real_escape_string($db, $_POST['msl_num']);
+		}elseif (isset($_GET['exportdo'])) {
+			$btnVal = ""; $filename = ""; $ship_perticularId = "";
+			$msl_num = $_GET['doinputs'];
+
+			// do infos
+	        $doId = $_GET['exportdo'];
+			$run2 = mysqli_query($db, "SELECT * FROM vessels_bl WHERE id = '$doId' ");
+			$row2 = mysqli_fetch_assoc($run2); $c_cnfId = $row2['cnf_name'];
+			$c_num = $row2['c_num']; $c_date = $row2['c_date']; $c_cargoname = $row2['c_cargoname'];
+			$do_cargoname = $row2['cargo_name'];$do_cargoqty = $row2['cargo_qty'];
+		}else{
+			$btnVal = ""; $filename = ""; $ship_perticularId = "";
+			$msl_num = 124;
+		}
 
 		$run = mysqli_query($db, "SELECT * FROM vessel_details WHERE msl_num = '$msl_num' ");
         $row = mysqli_fetch_assoc($run);
@@ -1910,11 +2021,14 @@
         $number_of_crew = $row['number_of_crew'];
 
 
+
         $run1 = mysqli_query($db, "SELECT * FROM vessels WHERE msl_num = '$msl_num' ");
         $row1 = mysqli_fetch_assoc($run1); $vessel = $row1['vessel_name']; 
-        $rep_id = $row1['representative']; 
+        $rep_id = $row1['representative']; $stevedore_id = $row1['stevedore'];
+        $arr_date = $row1['arrived'];
+        $stevedore_name = allData('stevedore', $stevedore_id, 'name');
 
-        if(!empty($row1['arrived'])){$arrived = date('d.m.Y', strtotime($row1['arrived']));}
+        if(!empty($arr_date)){$arrived = date('d.m.Y', strtotime($arr_date));}
         else{$arrived = "";}
         if(!empty($row1['sailing_date'])){$sailing_date=date('d.m.Y',strtotime($row1['sailing_date']));}
         else{$sailing_date = "";}
@@ -2137,13 +2251,13 @@
 			elseif(empty($rep_id)){$msg=alertMsg("Representative Not assigned yet!","danger");}
 	        else{ representative_letter($msl_num); }
 		}
-		elseif ($btnVal == "lightdues") { 
+		elseif ($btnVal == "lightdues" || $btnVal == "lightdues2nd") { 
 			if(empty($vessel)){$msg=alertMsg("Vessel Name Missing", "danger");}
 			elseif(empty($rotation)){$msg=alertMsg("Rotation Number Missing","danger");}
 			elseif(empty($capt_name)){$msg=alertMsg("Capt Name Missing","danger");}
 			elseif(empty($vsl_nrt)){$msg=alertMsg("NRT Missing","danger");}
 			elseif(empty($last_port)){$msg=alertMsg("Load Port Missing","danger");}
-	        else{ lightdues($msl_num); }
+	        else{ lightdues($msl_num,$btnVal); }
 		}
 		elseif ($btnVal == "watchman_letter") { 
 			if(empty($vessel)){$msg=alertMsg("Vessel Name Missing", "danger");}
@@ -2162,69 +2276,36 @@
 			elseif(empty($last_port)){$msg=alertMsg("Load Port Missing","danger");}
 	        else{ 
 	        	arrival_perticular($msl_num); ship_required_docs($msl_num);
-	        	representative_letter($msl_num); lightdues($msl_num);
+	        	representative_letter($msl_num); lightdues($msl_num,"lightdues");
 	        	watchman_letter($msl_num); vendor_letter($msl_num); 
 	        }
-		} else{$msg=alertMsg("btnVal: ".$btnVal,"danger");}
-	}
-
-	// blinput
-	//add bl
-	if (isset($_POST['blinput'])) {
-		$msl_num = $_POST['msl_num']; 
-		$line_num = mysqli_real_escape_string($db, $_POST['line_num']);
-		$bl_num = mysqli_real_escape_string($db, $_POST['bl_num']);
-		$cargo_qty = mysqli_real_escape_string($db, $_POST['cargo_qty']);
-		$cargo_name = mysqli_real_escape_string($db, $_POST['cargo_name']);
-		$shipper_name = mysqli_real_escape_string($db, $_POST['shipper_name']);
-		$shipper_address = mysqli_real_escape_string($db, $_POST['shipper_address']);
-		$receiver_id = mysqli_real_escape_string($db, $_POST['receiver_name']);
-		$bank_id = mysqli_real_escape_string($db, $_POST['bank_name']);
-		$load_port = mysqli_real_escape_string($db, $_POST['load_port']);
-
-		// check if member already sinked
-    	$run=mysqli_query($db, "SELECT * FROM vessel_bl WHERE msl_num = '$msl_num' AND bl_num = '$bl_num' ");
-    	if(empty($bl_num)){$msg = alertMsg("Enter Bl Number!", "danger");}
-    	elseif(mysqli_num_rows($run)>0){$msg=alertMsg("Bl Number Already Exist!", "danger");}
-    	else{
-    		$sql = "INSERT INTO vessel_bl(msl_num, line_num, bl_num, shipper_name, shipper_address, receiver_name, bank_name, load_port, cargo_name, cargo_qty) VALUES('$msl_num', '$line_num', '$bl_num', '$shipper_name', '$shipper_address', '$receiver_id', '$bank_id', '$load_port', '$cargo_name', '$cargo_qty')";
-			if(mysqli_query($db, $sql)){$msg = alertMsg("Bl added successfully!", "success");}
-			else{$msg = alertMsg("Please select bin type!", "danger");}
-			// header('location: 3rd_parties.php?page=stevedore');	
-    	}
-	}
-
-
-	//edit bl
-	if (isset($_POST['blupdate'])) {
-		$rawid = $_POST['blinputid']; $msl_num = $_POST['msl_num']; 
-		$line_num = mysqli_real_escape_string($db, $_POST['line_num']);
-		$bl_num = mysqli_real_escape_string($db, $_POST['bl_num']);
-		$cargo_qty = mysqli_real_escape_string($db, $_POST['cargo_qty']);
-		$cargo_name = mysqli_real_escape_string($db, $_POST['cargo_name']);
-		$shipper_name = mysqli_real_escape_string($db, $_POST['shipper_name']);
-		$shipper_address = mysqli_real_escape_string($db, $_POST['shipper_address']);
-		$receiver_id = mysqli_real_escape_string($db, $_POST['receiver_name']);
-		$bank_id = mysqli_real_escape_string($db, $_POST['bank_name']);
-		$load_port = mysqli_real_escape_string($db, $_POST['load_port']);
-
-		// check if member already sinked
-    	$run=mysqli_query($db, "SELECT * FROM vessel_bl WHERE msl_num = '$msl_num' AND bl_num = '$bl_num' AND id != '$rawid' ");
-    	if(empty($bl_num)){$msg = alertMsg("Enter Bl Number!", "danger");}
-    	elseif(mysqli_num_rows($run)>0){$msg=alertMsg("Bl Number Already Exist!", "danger");}
-    	else{
-    		// $sql = "INSERT INTO vessel_bl(msl_num, line_num, bl_num, shipper_name, shipper_address, receiver_name, bank_name, load_port, cargo_name, cargo_qty) VALUES('$msl_num', '$line_num', '$bl_num', '$shipper_name', '$shipper_address', '$receiver_id', '$bank_id', '$load_port', '$cargo_name', '$cargo_qty')";
-    		$sql = "UPDATE vessel_bl SET line_num = '$line_num', bl_num = '$bl_num', shipper_name = '$shipper_name', shipper_address = '$shipper_address', receiver_name = '$receiver_id', bank_name = '$bank_id', load_port = '$load_port', cargo_name = '$cargo_name', cargo_qty = '$cargo_qty' WHERE id = '$rawid' ";
-			if(mysqli_query($db, $sql)){$msg = alertMsg("Bl Updated successfully!", "success");}
-			else{$msg = alertMsg("Please select bin type!", "danger");}
-			// header('location: 3rd_parties.php?page=stevedore');	
-    	}
-	}
-
-	if (isset($_GET['bldelete'])) {
-		$delid = $_GET['bldelete']; $msl_num = $_GET['blinputs'];
-		if (mysqli_query($db, "DELETE FROM vessel_bl WHERE id = '$delid' ")) {
-			header("location: vessel_details.php?blinputs=$msl_num");
-		}else{$msg = alertMsg("Couldn't Delete Bl, Something Wrong!", "danger");}
+		}elseif ($btnVal == "igmformat") { 
+			if(empty($vessel)){$msg=alertMsg("Vessel Name Missing", "danger");}
+			elseif(!exist("vessels_bl", "msl_num = ".$msl_num)){$msg=alertMsg("BL Missing","danger");}
+	        else{ igm_format($msl_num); }
+		}elseif ($btnVal == "stevedorebooking") { 
+			if(empty($vessel)){$msg=alertMsg("Vessel Name Missing", "danger");}
+			elseif(empty($rotation)){$msg=alertMsg("Rotation Number Missing","danger");}
+			elseif(empty($vsl_cargo)){$msg=alertMsg("Cargo qty Missing","danger");}
+			elseif(empty($stevedore_name)){$msg=alertMsg("Stevedore Missing!","danger");}
+	        else{ stevedorebooking($msl_num); }
+		}elseif (isset($_GET['exportdo'])) { 
+			if(empty($vessel)){$msg=alertMsg("Vessel Name Missing", "danger");}
+			elseif(empty($arr_date)){$msg=alertMsg("Arrival Date Missing","danger");}
+			elseif(empty($do_cargoname)){$msg=alertMsg("Cargo name from Do Missing","danger");}
+			elseif(empty($do_cargoqty)){$msg=alertMsg("Cargo Qty from Do Missing","danger");}
+			elseif(empty($c_num)){$msg=alertMsg("C Number Missing","danger");}
+			elseif(empty($c_date)){$msg=alertMsg("C Date Missing","danger");}
+			elseif(empty($c_cnfId)){$msg=alertMsg("C Cnf Missing","danger");}
+	        else{ do_format($doId); }
+		}elseif ($btnVal == "portbillcollect") { 
+			if(empty($vessel)){$msg=alertMsg("Vessel Name Missing", "danger");}
+			elseif (empty($arrived)) {$msg=alertMsg("Vessel Not Received Yet!","danger");}
+			elseif (empty($sailing_date)) {$msg=alertMsg("Vessel Not Sailed Yet!","danger");}
+			elseif(empty($rotation)){$msg=alertMsg("Rotation Number Missing","danger");}
+			elseif(empty($vsl_grt)){$msg=alertMsg("Grt Missing","danger");}
+			elseif(empty($vsl_nrt)){$msg=alertMsg("Nrt Missing!","danger");}
+	        else{ portbillcollect($msl_num); }
+		} else{$msg=alertMsg("None above");}
 	}
 ?>
