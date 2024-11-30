@@ -2308,4 +2308,14 @@
 	        else{ portbillcollect($msl_num); }
 		} else{$msg=alertMsg("None above");}
 	}
+
+	//download forwadings
+	if (isset($_POST['downloadfile'])) {
+		$msl_num = $_POST['msl_num'];
+		$vessel=allDataUpdated('vessels','msl_num',$msl_num,'vessel_name');
+		$btnVal = $_POST['downloadfile'];
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$btnVal; downloadfile($save);
+		header("location: vessel_details.php?ship_perticular=$msl_num");
+	}
 ?>

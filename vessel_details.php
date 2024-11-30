@@ -2132,6 +2132,87 @@
             </div>
           </div>
         </section>
+
+
+        <!-- download files section -->
+        <section class="no-padding-top">
+          <div class="container-fluid">
+            <div class="row">
+              
+              <!-- Form Elements -->
+              <div class="col-lg-12">
+                <div class="block">
+                  <div class="title">
+                    <strong>Download Files Of MV. <?php echo $vessel; ?></strong>
+                    <!-- <a 
+                      onClick="javascript: return confirm('Please confirm deletion');" 
+                      href="index.php?del_msl_num=<?php echo $msl_num; ?>" 
+                      class="btn btn-danger btn-sm"
+                       style="float: right;"
+                    ><i class="bi bi-trash"></i></a> -->
+                    <a href="vessel_details.php?ship_perticular=<?php echo $msl_num; ?>" class="btn btn-secondary btn-sm" style="float: right; margin-right: 10px;">
+                        <i class="icon-ink"></i> Refresh
+                    </a>
+
+                  </div>
+
+                  <div class="block-body">
+
+                    <div class="table-responsive"> 
+                      <?php
+                        $folder = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; // Folder location
+
+                        // Check if the folder exists
+                        if (is_dir($folder)) {
+                          $files = scandir($folder); // Get all entries in the folder
+                          $files = array_filter($files, function($file) use ($folder) {
+                              // Include only actual files and exclude temporary files starting with "~$"
+                              return is_file($folder . $file) && strpos($file, '~$') !== 0;
+                          });
+
+                          if (empty($files)) {
+                              echo "No files available for download. $folder";
+                          }else { ?>
+                            <table class="table table-dark table-sm table-custom" id="downloads">
+                              <thead>
+                                <tr>
+                                  <th colspan="8"><?php echo "<h3>Files in '$folder'</h3>"; ?></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <form method="post" action="vessel_details.php?ship_perticular=<?php echo $msl_num; ?>">
+                                  <input type="hidden" name="msl_num" value="<?php echo $msl_num; ?>">
+                                  <?php
+                                  foreach ($files as $file) {
+                                    $filePath = $folder . $file; ?>
+                                    <tr style="border: 1px solid white;">
+                                      <td colspan="6">
+                                        <input type='hidden' name="<?php echo "$file"; ?>" value="<?php echo' . htmlspecialchars($file) . ' ?>">
+                                        <?php echo "$file"; ?>
+                                      </td>
+                                      <td colspan="2">
+                                        <button type="submit" class="form-control btn btn-success btn-sm" name="downloadfile" value="<?php echo "$file" ?>" style="color: white">
+                                          Download
+                                        </button>
+                                      </td>
+                                    </tr> 
+                                    <?php 
+                                  } ?>
+                                </form> 
+                              </tbody>
+                            </table>
+                          <?php }
+                        } else {echo "The folder does not exist.";}
+                        ?>
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
         <!-- END SHIP PERTICULAR -->
 
 

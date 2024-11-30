@@ -128,6 +128,13 @@
 		} else {echo "The file does not exist.";}
 	}
 
+	function createpath($path){
+		if (!is_dir($path)) {
+		    if (mkdir($path, 0755, true)) { echo "Folder '$path' created successfully!"; } 
+		    else { echo "Failed to create the folder."; }
+		} else {  echo "The folder already exists."; }
+	}
+
 	// Helper function to convert numbers less than 1000
     function convertToWords($num, $ones, $tens) {
         $str = "";
@@ -2077,9 +2084,9 @@
         
         // looking for missing forwading info is esixt
 
-    	$exten = ".docx"; $filename = "SHIP Details";
+    	$exten = ".docx"; $filename = "SHIP Details".$exten;
     	$new_filename = $filename." ".$msl_num.".MV. ".$vessel;
-		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/vessel_details/".$filename.$exten);
+		$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/vessel_details/".$filename);
     	// $filename = $msl_num.".MV. ".$vessel."_29.INCOME TAX FORWARDING.docx";
 		
 		// set pc forwading values
@@ -2113,12 +2120,18 @@
 				"capt_name" => "$capt_name",
 				"number_of_crew" => "$number_of_crew"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$new_filename.$exten;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$new_filename.$exten;
+
+		// Create folder if not exist
+		createpath($path);
+		// save file
+		$templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 	// main file cover || file cover
@@ -2132,12 +2145,16 @@
         $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/file_cover_formats/".$filename);
     	// $filename = $msl_num.".MV. ".$vessel."_13.FINAL ENTRY (4 COPY).docx";
     	$templateProcessor->setValues(["msl_num" => "$msl_num", "vessel" => "$vessel"]);
-    	$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+
+
+    	$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");   
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");  
 	}
 
 	// main file cover || file cover
@@ -2150,12 +2167,15 @@
         $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/file_cover_formats/".$filename);
     	// $filename = $msl_num.".MV. ".$vessel."_13.FINAL ENTRY (4 COPY).docx";
     	$templateProcessor->setValues(["msl_num" => "$msl_num", "vessel" => "$vessel"]);
-    	$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");   
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");  
 	}
 
 	// finalentry || final entry
@@ -2179,12 +2199,14 @@
 				"month" => "$month"
 			]
 		);
-    	$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+    	$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");   
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");   
 	}
 
 
@@ -2214,12 +2236,15 @@
 				"year" => "$year",
 				"month" => "$month"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");    
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");  
 	}
 
 
@@ -2250,12 +2275,15 @@
 				"year" => "$year",
 				"month" => "$month"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");  
         
 	}
 
@@ -2292,12 +2320,15 @@
 				"year" => "$year",
 				"month" => "$month"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");  
 	}
 
 
@@ -2325,12 +2356,15 @@
 				"month" => "$month",
 				"day" => "$day"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel." ".$filename;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2367,12 +2401,15 @@
 				"year" => "$year",
 				"month" => "$month"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2414,12 +2451,15 @@
 				"year" => "$year",
 				"month" => "$month"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel." ".$filename;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2452,12 +2492,15 @@
 				"vsl_cargo" => "$vsl_cargo",
 				"vsl_cargo_name"=>"$vsl_cargo_name"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2505,12 +2548,15 @@
 				"vsl_cargo" => "$vsl_cargo",
 				"vsl_cargo_name"=>"$vsl_cargo_name"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/";
+		$save = $path.$filename;
+
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2539,12 +2585,12 @@
 				"vsl_cargo" => "$vsl_cargo",
 				"vsl_cargo_name"=>"$vsl_cargo_name"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2573,12 +2619,12 @@
 				"vsl_cargo" => "$vsl_cargo",
 				"vsl_cargo_name"=>"$vsl_cargo_name"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2605,12 +2651,12 @@
 				"rotation" => "$rotation",
 				"vsl_cargo" => "$vsl_cargo"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2637,11 +2683,12 @@
 				"vsl_cargo" => "$vsl_cargo",
 				"vsl_cargo_name" => "$vsl_cargo_name"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 
 
 		$exten = ".docx";$filename = "6.APPILICATION OF SURVEYOR BOOKING 1 copy".$exten;
@@ -2657,12 +2704,12 @@
 				"vsl_cargo" => "$vsl_cargo",
 				"vsl_cargo_name" => "$vsl_cargo_name"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2743,12 +2790,12 @@
 				"number_of_crew" => "$number_of_crew",
 				"with_retention" => "$with_retention"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2773,12 +2820,12 @@
 				"rotation" => "$rotation",
 				"sailing_date" => "$sailing_date"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2809,12 +2856,12 @@
 				"sailing_date" => "$sailing_date",
 				"with_retention" => "$with_retention"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2851,12 +2898,12 @@
 				"next_port" => "$next_port",
 				"with_retention" => "$with_retention"
 			]
-		); $pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 	function arrival_perticular($msl_num = 205){
@@ -2868,12 +2915,11 @@
     	$exten = ".docx";$filename = "24.Arrival Particulars".$exten;
     	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/receving_docs/".$filename);
     	$templateProcessor->setValues(["vessel" => "$vessel"]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 	function ship_required_docs($msl_num = 205){
@@ -2885,12 +2931,11 @@
     	$exten = ".docx";$filename = "26.Ship Docs Required".$exten;
     	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/receving_docs/".$filename);
     	$templateProcessor->setValues(["vessel" => "$vessel"]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 	function representative_letter($msl_num = 205){
@@ -2911,12 +2956,11 @@
     		"rep_goodname" => "$rep_goodname",
     		"rep_contact" => "$rep_contact"
     	]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2951,12 +2995,11 @@
     		"amount" => "$amount",
     		"amountinword" => "$amountinword"
     	]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2974,12 +3017,11 @@
 			"year" => "$year",
 			"month" => "$month"
     	]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -2999,12 +3041,11 @@
 			"year" => "$year",
 			"month" => "$month"
     	]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename;
-		$templateProcessor->saveAs($pathToSave);
-
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		// header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 	function igm_format($msl_num = 205){
@@ -3063,11 +3104,11 @@
 			"year" => "$year",
 			"month" => "$month"
     	]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename." of ".$msl_num.".MV. ".$vessel.$exten;
-		$templateProcessor->saveAs($pathToSave);
 
-		// Check if the file exists
-		downloadfile($pathToSave);
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; 
+		$save = $path.$filename." of ".$msl_num.".MV. ".$vessel.$exten;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 
 		// create igm body
 		$run4 = mysqli_query($db, "SELECT * FROM vessels_bl WHERE msl_num = '$msl_num' ");
@@ -3169,12 +3210,12 @@
 		} else {$section->addText('No records found.');}
 
 		// Save the document
-		$filename = 'forwadings/auto_forwardings/igm_body.docx';
-		$phpWord->save($filename, 'Word2007');
+		$filename = 'forwadings/auto_forwardings/'.$msl_num.'.MV. '.$vessel.'/igm_body.docx';
+		createpath($path); $phpWord->save($filename, 'Word2007');
 
 		// Close database connection
 		$db->close();
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -3194,8 +3235,8 @@
         $row=mysqli_fetch_assoc(mysqli_query($db,"SELECT*FROM vessel_details WHERE msl_num='$msl_num'"));
         $vsl_cargo = $row['vsl_cargo'];
 		
-    	$exten = ".docx";$filename = "7.STEAVATOR BOOKING";
-    	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/others/".$filename.$exten);
+    	$exten = ".docx";$filename = "7.STEAVATOR BOOKING".$exten;
+    	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/others/".$filename);
     	$templateProcessor->setValues([
     		"msl_num" => "$msl_num",
 			"vessel" => "$vessel",
@@ -3206,12 +3247,11 @@
 			"year" => "$year",
 			"month" => "$month"
     	]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename.$exten;
-		$templateProcessor->saveAs($pathToSave);
-
+    	$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -3233,8 +3273,9 @@
         $row=mysqli_fetch_assoc(mysqli_query($db,"SELECT*FROM vessel_details WHERE msl_num='$msl_num'"));
         $vsl_nrt = $row['vsl_nrt']; $vsl_grt = $row['vsl_grt']; $vsl_nationality = strtoupper($row['vsl_nationality']);
 		
-    	$exten = ".docx";$filename = "PORT BILL COLLECTION FORWARDING";
-    	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/others/".$filename.$exten);
+    	$exten = ".docx";$filename = "PORT BILL COLLECTION FORWARDING".$exten;
+    	$filenameraw = "PORT BILL COLLECTION FORWARDING";
+    	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/others/".$filename);
     	$templateProcessor->setValues([
     		"msl_num" => "$msl_num",
 			"vessel" => "$vessel",
@@ -3248,12 +3289,12 @@
 			"month" => "$month",
 			"day" => "$day"
     	]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename." OF ".$msl_num.".MV. ".$vessel.$exten;
-		$templateProcessor->saveAs($pathToSave);
-
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; 
+		$save = $path.$filenameraw." OF ".$msl_num.".MV. ".$vessel.$exten;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?ship_perticular=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
@@ -3291,8 +3332,8 @@
         $row=mysqli_fetch_assoc(mysqli_query($db,"SELECT*FROM vessel_details WHERE msl_num='$msl_num'"));
         $vsl_cargo = $row['vsl_cargo'];
 		
-    	$exten = ".docx";$filename = "DO";
-    	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/others/".$filename.$exten);
+    	$exten = ".docx";$filename = "DO".$exten; $filenameraw = "DO";
+    	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/others/".$filename);
     	$templateProcessor->setValues([
     		"msl_num" => "$msl_num",
 			"vessel" => "$vessel",
@@ -3316,12 +3357,12 @@
 			"month" => "$month",
 			"day" => "$day"
     	]); 
-		$pathToSave = "forwadings/auto_forwardings/".$filename." OF OBL NO ".$bl_num." MV. ".$vessel.$exten;
-		$templateProcessor->saveAs($pathToSave);
-
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; 
+		$save = $path.$filenameraw." OF OBL NO ".$bl_num." MV. ".$vessel.$exten;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
 		// Check if the file exists
-		downloadfile($pathToSave);
-		header("location: vessel_details.php?doinputs=$msl_num");
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
 	}
 
 
