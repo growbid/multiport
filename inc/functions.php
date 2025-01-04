@@ -59,57 +59,6 @@
 		$run = mysqli_query($db, $sql); $num = mysqli_num_rows($run); return (int)$num;
 	}
 
-	// Convert number to words
-	// function numberToWords($num) {
-	//     $ones = array(
-	//         "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", 
-	//         "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", 
-	//         "seventeen", "eighteen", "nineteen"
-	//     );  
-	//     $tens = array(
-	//         "", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"
-	//     );
-	//     $hundreds = array( "hundred", "thousand", "lakh", "crore" );
-	//     if ($num == 0) { return "zero"; }
-	//     $num = (string) $num;
-	//     // Helper function to convert numbers less than 1000
-	//     function convertToWords($num, $ones, $tens) {
-	//         $str = "";
-	//         if ($num > 99) {
-	//             $str .= $ones[intval($num / 100)] . " hundred ";
-	//             $num = $num % 100;
-	//         }
-	//         if ($num > 19) {
-	//             $str .= $tens[intval($num / 10)] . " ";
-	//             $num = $num % 10;
-	//         }
-	//         if ($num > 0) { $str .= $ones[$num] . " "; }
-	//         return $str;
-	//     }
-	//     $length = strlen($num); $output = "";
-	//     // Process the crore place if applicable
-	//     if ($length > 7) {
-	//         $output .= convertToWords(intval(substr($num, 0, -7)), $ones, $tens) . "crore ";
-	//         $num = substr($num, -7);
-	//         $length = strlen($num);
-	//     }
-	//     // Process the lakh place if applicable
-	//     if ($length > 5) {
-	//         $output .= convertToWords(intval(substr($num, 0, -5)), $ones, $tens) . "lakh ";
-	//         $num = substr($num, -5);
-	//         $length = strlen($num);
-	//     }
-	//     // Process the thousand place if applicable
-	//     if ($length > 3) {
-	//         $output .= convertToWords(intval(substr($num, 0, -3)), $ones, $tens) . "thousand ";
-	//         $num = substr($num, -3);
-	//     }
-	//     // Process the rest (hundreds and below)
-	//     $output .= convertToWords(intval($num), $ones, $tens);
-
-	//     return ucfirst(trim($output)) . " only";
-	// }
-
 	// download localfiles
 	function downloadfile($file) {
 		if (file_exists($file)) {
@@ -128,11 +77,30 @@
 		} else {echo "The file does not exist.";}
 	}
 
+	// create folder if not exists
 	function createpath($path){
 		if (!is_dir($path)) {
 		    if (mkdir($path, 0755, true)) { echo "Folder '$path' created successfully!"; } 
 		    else { echo "Failed to create the folder."; }
 		} else {  echo "The folder already exists."; }
+	}
+
+	// Filter zero from numbers (Remove decimal part if all digits are zero)
+	function filterzero($number) {
+	    // Check if the number has a decimal point
+	    if (strpos($number, '.') !== false) {
+	        // Separate integer and decimal parts
+	        $parts = explode('.', $number);
+	        $integerPart = $parts[0];
+	        $decimalPart = $parts[1];
+
+	        // If the decimal part is all zeroes, return only the integer part
+	        if ((int)$decimalPart === 0) {
+	            return $integerPart;
+	        }
+	    }
+	    // Return the number as is if no zero decimal part
+	    return $number;
 	}
 
 	// Helper function to convert numbers less than 1000
@@ -151,6 +119,7 @@
     }
 	// Convert number to words
 	function numberToWords($num) {
+		$num = filterzero($num);
 	    $ones = array(
 	        "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", 
 	        "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", 
@@ -221,9 +190,10 @@
 	//     return $formattedNumber;
 	// }
 
+	// convert to indian number formats
 	function formatIndianNumber($number) {
 	    // Convert the number to a string if it is not already
-	    $numberStr = (string)$number;
+	    $numberStr = filterzero((string)$number);
 	    
 	    // Check if the number contains a decimal point
 	    if (strpos($numberStr, '.') !== false) {
@@ -574,7 +544,8 @@
 			} // filter importer
 			if (isset($query['fltrimporter']) && !empty($query['fltrimporter'])) {
 				$importer_ids_str = implode(',', $query['fltrimporter']); 
-				$getvsl = "SELECT * FROM vessels_importer WHERE importer IN ($importer_ids_str)";
+				// $getvsl = "SELECT * FROM vessels_importer WHERE importer IN ($importer_ids_str)";
+				$getvsl = "SELECT id, importer AS name, msl_num FROM vessels_importer WHERE importer IN ($importer_ids_str) UNION ALL SELECT id, receiver_name AS name, msl_num FROM vessels_bl WHERE receiver_name IN ($importer_ids_str)";
 				$r = mysqli_query($db, $getvsl); while ($rw = mysqli_fetch_assoc($r)) {
 					$mslnums_importer[] = $rw['msl_num'];
 				}
@@ -583,7 +554,8 @@
 				// convert portcode id to string like {port_ids_str = "1,2,4,7";}
 				$port_ids_str = implode(',', $query['fltrportcode']); 
 				// select from vessels_cargo which has these port codes
-				$getvsl = "SELECT * FROM vessels_cargo WHERE loadport IN ($port_ids_str)";
+				// $getvsl = "SELECT * FROM vessels_cargo WHERE loadport IN ($port_ids_str)";
+				$getvsl = "SELECT msl_num FROM vessels_cargo WHERE loadport IN ($port_ids_str) UNION ALL SELECT msl_num FROM vessels_bl WHERE load_port IN ($port_ids_str)";
 				$r = mysqli_query($db, $getvsl); 
 				// checks if found any vessel
 				if(mysqli_num_rows($r) > 0){
@@ -598,14 +570,19 @@
 			} //filter cargo
 			if (isset($query['fltrcargo']) && !empty($query['fltrcargo'])) {
 				$cargo_ids_str = implode(',', $query['fltrcargo']); 
-				$getvsl = "SELECT * FROM vessels_cargo WHERE cargo_key IN ($cargo_ids_str)";
+				// $getvsl = "SELECT * FROM vessels_cargo WHERE cargo_key IN ($cargo_ids_str)";
+				$getvsl = "SELECT msl_num FROM vessels_cargo WHERE cargo_key IN ($cargo_ids_str) UNION ALL SELECT msl_num FROM vessels_bl WHERE cargokeyId IN ($cargo_ids_str)";
+
 				$r = mysqli_query($db, $getvsl); while ($rw = mysqli_fetch_assoc($r)) {
 					$mslnums_cargo[] = $rw['msl_num'];
 				}
 			} //filter cnf
 			if (isset($query['fltrcnf']) && !empty($query['fltrcnf'])) {
 				$cnf_ids_str = $query['fltrcnf']; 
-				$getvsl = "SELECT * FROM vessels_importer WHERE cnf IN ($cnf_ids_str)";
+				// $getvsl = "SELECT * FROM vessels_importer WHERE cnf IN ($cnf_ids_str)";
+
+				$getvsl = "SELECT msl_num FROM vessels_importer WHERE cnf IN ($cnf_ids_str) UNION ALL SELECT msl_num FROM vessels_bl WHERE cnf_name IN ($cnf_ids_str)";
+
 				$r = mysqli_query($db, $getvsl); while ($rw = mysqli_fetch_assoc($r)) {
 					$mslnums_cnf[] = $rw['msl_num'];
 				}
@@ -1031,7 +1008,9 @@
 	}
 
 	function vesselsCnf($msl_num = 111){
-		GLOBAL $db; $run = mysqli_query($db, "SELECT * FROM vessels_bl WHERE msl_num = '$msl_num' GROUP BY receiver_name ");
+		GLOBAL $db; 
+		// $run = mysqli_query($db, "SELECT * FROM vessels_bl WHERE msl_num = '$msl_num' GROUP BY receiver_name ");
+		$run = mysqli_query($db, "SELECT id, receiver_name, cnf_name FROM vessels_bl WHERE msl_num = '$msl_num' GROUP BY receiver_name UNION ALL SELECT id, importer AS receiver_name, cnf FROM vessels_importer WHERE msl_num = '$msl_num' GROUP BY importer");
 		while ($row = mysqli_fetch_assoc($run)) {
 			$id = $row['id']; 
 			$importerId = $row['receiver_name'];
@@ -2750,7 +2729,7 @@
 		GLOBAL $db; $filename = ""; 
 		// get ship_perticular data
         $row = mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM vessel_details WHERE msl_num = '$msl_num' ")); $vsl_cargo = $row['vsl_cargo']; $capt_name = $row['capt_name'];
-        $vsl_nrt = formatIndianNumber($row['vsl_nrt']); $vsl_grt = $row['vsl_grt']; $vsl_imo = $row['vsl_imo'];
+        $vsl_nrt = formatIndianNumber($row['vsl_nrt']); $vsl_grt = formatIndianNumber($row['vsl_grt']); $vsl_imo = $row['vsl_imo'];
         $vsl_nationality = $row['vsl_nationality']; $vsl_registry = $row['vsl_registry'];
         $last_port = $row['last_port']; $next_port = $row['next_port'];
         $vsl_dead_weight = $row['vsl_dead_weight']; $number_of_crew = $row['number_of_crew'];
@@ -3003,6 +2982,75 @@
 	}
 
 
+	// vatchalan
+	function vataitchalan15($msl_num = 205){
+		GLOBAL $db; $filename = ""; 
+		// get vessel data
+		$row = mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM vessel_details WHERE msl_num = '$msl_num' ")); 
+		$vsl_nrt = formatIndianNumber($row['vsl_nrt']);
+		$rawnrt = $row['vsl_nrt']; $whole = $rawnrt * 10;
+		$foramount = $whole * 0.15;
+		$vat15 = formatIndianNumber($foramount);
+		$amount = formatIndianNumber($row['vsl_nrt']*10); 
+		$amountinword=strtoupper(numberToWords($foramount));
+
+        $row1=mysqli_fetch_assoc(mysqli_query($db,"SELECT*FROM vessels WHERE msl_num='$msl_num'"));
+        $vessel = $row1['vessel_name']; $year = date("Y"); $month = date("m"); $day = date("d");
+		
+    	$exten = ".docx"; $filename = "15% CHALAN";
+    	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/vat_chalan/".$filename.$exten);
+    	$templateProcessor->setValues([
+			"vessel" => "$vessel",
+			"year" => "$year",
+			"month" => "$month",
+			"day" => "$day",
+    		"vsl_nrt" => "$vsl_nrt",
+    		"vat15" => "$vat15",
+    		"amount" => "$amount",
+    		"amountinword" => "$amountinword"
+    	]); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename." OF " .$msl_num.".MV. ".$vessel.$exten;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
+		// Check if the file exists
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
+	}
+
+	// vatchalan 10%
+	function vataitchalan10($msl_num = 205){
+		GLOBAL $db; $filename = ""; 
+		// get vessel data
+		$row = mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM vessel_details WHERE msl_num = '$msl_num' ")); 
+		$vsl_nrt = formatIndianNumber($row['vsl_nrt']);
+		$rawnrt = $row['vsl_nrt']; $whole = $rawnrt * 10;
+		$vat10 = formatIndianNumber($whole * 0.10);
+		$amount = formatIndianNumber($row['vsl_nrt']*10); 
+		$amountinword=strtoupper(numberToWords($rawnrt));
+
+        $row1=mysqli_fetch_assoc(mysqli_query($db,"SELECT*FROM vessels WHERE msl_num='$msl_num'"));
+        $vessel = $row1['vessel_name']; $year = date("Y");$yearnxt = date("Y") + 1; $month = date("m"); $day = date("d");
+		
+    	$exten = ".docx"; $filename = "10% CHALAN";
+    	$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor("forwadings/templets/vat_chalan/".$filename.$exten);
+    	$templateProcessor->setValues([
+			"vessel" => "$vessel",
+			"year" => "$year",
+			"yearnxt" => "$yearnxt",
+			"month" => "$month",
+			"day" => "$day",
+    		"vsl_nrt" => "$vsl_nrt",
+    		"vat10" => "$vat10",
+    		"amount" => "$amount",
+    		"amountinword" => "$amountinword"
+    	]); 
+		$path = "forwadings/auto_forwardings/".$msl_num.".MV. ".$vessel."/"; $save = $path.$filename." OF " .$msl_num.".MV. ".$vessel.$exten;
+		// Create folder if not exist, then save the file to that path
+		createpath($path); $templateProcessor->saveAs($save);
+		// Check if the file exists
+		header("location: vessel_details.php?ship_perticular=$msl_num#downloads");
+	}
+
+
 	function watchman_letter($msl_num = 205){
 		GLOBAL $db; $filename = ""; 
 		// get vessel data
@@ -3142,7 +3190,8 @@
 		    	$importerId = $row5['receiver_name'];
 		    	if (isset($importerId) && !empty($importerId)) {
 		    		$importerbin = allData('bins', $importerId, 'bin');
-					$importername = allData('bins', $importerId, 'name');
+					// $importername = allData('bins', $importerId, 'name');
+					$importername = str_replace("&", "&amp;", allData('bins', $importerId, 'name'));
 					$importer = $importerbin." (".$importername.")";
 		    	}else{
 		    		$importerbin = "IMPORTER BIN";
@@ -3154,7 +3203,8 @@
 				$bankId = $row5['bank_name'];
 				if (isset($bankId) && !empty($bankId)) {
 					$bankbin = allData('bins', $bankId, 'bin');
-					$bankname = allData('bins', $bankId, 'name');
+					// $bankname = allData('bins', $bankId, 'name');
+					$bankname = str_replace("&", "&amp;", allData('bins', $bankId, 'name'));
 					$bank = $bankbin." (".$bankname.")";
 				}else{
 					$bankbin = "BANK BIN";
@@ -3162,7 +3212,8 @@
 					$bank = $bankbin." (".$bankname.")";
 				}
 					
-				$shipper_name = $row5['shipper_name']; $shipper_address = $row5['shipper_address'];
+				$shipper_name = $row5['shipper_name']; 
+				$shipper_address = $row5['shipper_address'];
 
 				// Split the string by newline
 				$lines = explode("\n", $text);
@@ -3310,7 +3361,8 @@
 		$c_cnfname = allData('cnf', $c_cnfid, 'name');
 		$c_cnfname = str_replace("&", "&amp;", $c_cnfname); 
 		$c_importerid = $row2['receiver_name'];
-		$c_importername = allData('bins', $c_importerid, 'name'); $bl_num = $row2['bl_num'];
+		$c_importername = str_replace("&", "&amp;", allData('bins', $c_importerid, 'name'));
+		$bl_num = $row2['bl_num'];
 		$c_qty = $row2['cargo_qty']; $c_cargoqty = formatIndianNumber($c_qty); 
 		$qty_inwords = strtoupper(numberToWords($c_qty)); 
 		$line_num = $row2['line_num']; $linenum_inwords = strtoupper(numberToWords($line_num));

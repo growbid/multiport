@@ -603,7 +603,7 @@
                           </select>
                         </div> -->
 
-                        <div class="form-group col-md-3">
+                        <!-- <div class="form-group col-md-3">
                           <label for="inputState">Impoter</label>
                           <select name="importer[]" class="form-control mb-3 mb-3 selectpicker" multiple style="background: transparent;" data-live-search="true">
                             <?php
@@ -617,10 +617,10 @@
                               }
                             ?>
                           </select>
-                        </div>
+                        </div> -->
 
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-9">
                           <label for="inputState">Stevedore</label>
                           <select id="inputState" class="form-control search" name="stevedore">
                             <option value="<?php echo $stevedore ?>"><?php echo alldata('stevedore', $stevedore, 'name'); ?></option>
@@ -2092,12 +2092,17 @@
                             </tr>
 
                             <tr style="border-left: 1px solid white; border-right: 1px solid white; border-bottom: 1px solid white;">
-                              <td colspan="4">
+                              <td colspan="3">
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "igmformat" ?>" style="color: white">
                                   Igm Format
                                 </button>
                               </td>
-                              <td colspan="4">
+                              <td colspan="3">
+                                <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "vataitchalan" ?>" style="color: white">
+                                  15% VAT & 10% AIT
+                                </button>
+                              </td>
+                              <td colspan="2">
                                 <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "sorformat" ?>" style="color: white" disabled>
                                   Sof Format
                                 </button>
@@ -2120,6 +2125,23 @@
                                 </button>
                               </td>
                             </tr>
+
+                            <!-- <tr>
+                              <th colspan="8">Vat Chalan</th>
+                            </tr>
+
+                            <tr style="border-left: 1px solid white; border-right: 1px solid white; border-bottom: 1px solid white;">
+                              <td colspan="4">
+                                <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "vatfifteen" ?>" style="color: white">
+                                  15% VAT ON LIGHT DUES
+                                </button>
+                              </td>
+                              <td colspan="4">
+                                <button type="submit" class="form-control btn btn-success btn-sm" name="export_vsl_forwadings" value="<?php echo "vatten" ?>" style="color: white">
+                                  10% AIT ON LIGHT DUES
+                                </button>
+                              </td>
+                            </tr> -->
                           </form>
                         </tbody>
                       </table>
@@ -2672,7 +2694,7 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">Edit BL Info</h5>
+                  <h5 class="modal-title" id="exampleModalLongTitle">Edit Do Info</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>

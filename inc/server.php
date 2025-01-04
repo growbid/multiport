@@ -371,30 +371,30 @@
 		
 		
 		
-		// update vessels importer
-		if (isset($_POST['importer'])) {
-			$importer = $_POST['importer'];
+		// // update vessels importer
+		// if (isset($_POST['importer'])) {
+		// 	$importer = $_POST['importer'];
 
-			// Convert the importer list to a comma-separated string for SQL query
-			$importerListString = "'" . implode("', '", $importer) . "'";
-			// SQL query to delete importers not in the importer list
-			$delsql = "DELETE FROM vessels_importer WHERE msl_num = '$msl_num' AND importer NOT IN ($importerListString)"; mysqli_query($db,$delsql);
+		// 	// Convert the importer list to a comma-separated string for SQL query
+		// 	$importerListString = "'" . implode("', '", $importer) . "'";
+		// 	// SQL query to delete importers not in the importer list
+		// 	$delsql = "DELETE FROM vessels_importer WHERE msl_num = '$msl_num' AND importer NOT IN ($importerListString)"; mysqli_query($db,$delsql);
 
-			// indest vessels consignee
-			foreach ($importer as $key =>  $importerId) {
-		    	$importer_name = allData('bins', $importerId, 'name');
+		// 	// indest vessels consignee
+		// 	foreach ($importer as $key =>  $importerId) {
+		//     	$importer_name = allData('bins', $importerId, 'name');
 
-		    	// check if importer already sinked
-		    	$run1 = mysqli_query($db, "SELECT * FROM vessels_importer WHERE importer = '$importerId' AND msl_num = '$msl_num' ");
-		    	// skip if importer already exists
-		    	if (mysqli_num_rows($run1) > 0 || $importerId == 0 ) { continue; }
-		    	// now insert
-		    	$sql = "
-			    	INSERT INTO vessels_importer(msl_num, importer, cnf)
-			    	VALUES('$msl_num', '$importerId', '')
-		    	"; $run = mysqli_query($db, $sql);
-		    }
-		}else{mysqli_query($db, "DELETE FROM vessels_importer WHERE msl_num = '$msl_num' ");}
+		//     	// check if importer already sinked
+		//     	$run1 = mysqli_query($db, "SELECT * FROM vessels_importer WHERE importer = '$importerId' AND msl_num = '$msl_num' ");
+		//     	// skip if importer already exists
+		//     	if (mysqli_num_rows($run1) > 0 || $importerId == 0 ) { continue; }
+		//     	// now insert
+		//     	$sql = "
+		// 	    	INSERT INTO vessels_importer(msl_num, importer, cnf)
+		// 	    	VALUES('$msl_num', '$importerId', '')
+		//     	"; $run = mysqli_query($db, $sql);
+		//     }
+		// }else{mysqli_query($db, "DELETE FROM vessels_importer WHERE msl_num = '$msl_num' ");}
 
 		// check if multiple survey_party choosen for more then one purpose
 		if (
@@ -1649,10 +1649,13 @@
 				TRUNCATE TABLE `surveycompany`; 
 				TRUNCATE TABLE `surveyors`; 
 				/*TRUNCATE TABLE `users`; */
+				TRUNCATE TABLE `vendor_contacts`; 
 				TRUNCATE TABLE `vessels`; 
+				TRUNCATE TABLE `vessels_bl`; 
 				TRUNCATE TABLE `vessels_cargo`;  
 				TRUNCATE TABLE `vessels_importer`; 
 				TRUNCATE TABLE `vessels_surveyor`; 
+				TRUNCATE TABLE `vessel_details`; 
 			";
 			if (mysqli_multi_query($db,$sql)) {
 				$msg=alertMsg("Data Destroyed!","success");
@@ -1817,6 +1820,49 @@
 			'fltrsurveycompany' => $fltrsurveycompany,
 			'dates' => $dates
 		); // now the queries passes through "allvessels($key, $query)" function in index page
+	}
+
+	// filter process
+	if (isset($_POST['switchvsl'])) {
+		// set all the variables to empty
+		$firstvsl = $secondvsl = "";
+		
+		// after id 219, vessels bl input system added, can't swap below 219
+		if (isset($_POST['firstvsl']) && isset($_POST['secondvsl']) && $_POST['firstvsl'] != $_POST['secondvsl'] && $_POST['firstvsl'] > 219 && $_POST['secondvsl'] > 219) {
+			// get all the variables from form
+			$id1st = mysqli_real_escape_string($db, $_POST['firstvsl']);
+			$id2nd = mysqli_real_escape_string($db, $_POST['secondvsl']);
+			$container = 'swapit';
+
+			$firstvsl = allData('vessels', $id1st, 'msl_num');
+			$nm1st = allData('vessels', $id1st, 'vessel_name');
+			$secondvsl = allData('vessels', $id2nd, 'msl_num');
+			$nm2nd = allData('vessels', $id2nd, 'vessel_name');
+
+			// 232 = swapit, 233 = 232, swapit = 233;
+			// first switch the vessel_details
+			$sql1 = "UPDATE vessel_details SET msl_num = 'swapit' WHERE msl_num = '$firstvsl' ";
+			$sql2 = "UPDATE vessel_details SET msl_num = '$firstvsl' WHERE msl_num='$secondvsl' ";
+			$sql3 = "UPDATE vessel_details SET msl_num = '$secondvsl' WHERE msl_num = 'swapit' ";
+			mysqli_query($db, $sql1); mysqli_query($db, $sql2); mysqli_query($db, $sql3);
+
+			// second switch the vessels_surveyor
+			$sql4 = "UPDATE vessels_surveyor SET msl_num = 'swapit' WHERE msl_num = '$firstvsl' ";
+			$sql5 = "UPDATE vessels_surveyor SET msl_num='$firstvsl' WHERE msl_num='$secondvsl' ";
+			$sql6 = "UPDATE vessels_surveyor SET msl_num ='$secondvsl' WHERE msl_num = 'swapit' ";
+			mysqli_query($db, $sql4); mysqli_query($db,$sql5); mysqli_query($db, $sql6);
+
+			// third switch the vessels_bl
+			$sql7 = "UPDATE vessels_bl SET msl_num = 'swapit' WHERE msl_num = '$firstvsl' ";
+			$sql8 = "UPDATE vessels_bl SET msl_num = '$firstvsl' WHERE msl_num = '$secondvsl' ";
+			$sql9 = "UPDATE vessels_bl SET msl_num = '$secondvsl' WHERE msl_num = 'swapit' ";
+			mysqli_query($db, $sql7); mysqli_query($db, $sql8); mysqli_query($db, $sql9);
+
+			// forth switch the vessels
+			$sql10 = "UPDATE vessels SET vessel_name = '$nm2nd' WHERE id = '$id1st' ";
+			$sql11 = "UPDATE vessels SET vessel_name = '$nm1st' WHERE id = '$id2nd' ";
+			mysqli_query($db, $sql10); mysqli_query($db, $sql11);
+		}else{$msg = alertMsg("Select Both Vessel", "danger");}
 	}
 
 
@@ -2306,6 +2352,11 @@
 			elseif(empty($vsl_grt)){$msg=alertMsg("Grt Missing","danger");}
 			elseif(empty($vsl_nrt)){$msg=alertMsg("Nrt Missing!","danger");}
 	        else{ portbillcollect($msl_num); }
+		}
+		elseif ($btnVal == "vataitchalan") { 
+			if(empty($vessel)){$msg=alertMsg("Vessel Name Missing", "danger");}
+			elseif(empty($vsl_nrt)){$msg=alertMsg("NRT Missing","danger");}
+	        else{ vataitchalan15($msl_num,$btnVal);vataitchalan10($msl_num,$btnVal); }
 		} else{$msg=alertMsg("None above");}
 	}
 

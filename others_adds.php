@@ -286,11 +286,11 @@
 
 <!-- edit remarks -->
 <?php
-  $run3 = mysqli_query($db, "SELECT * FROM remarks");
-  while ($row3 = mysqli_fetch_assoc($run3)) {
-    $id = $row3['id']; $name = $row3['name'];
+  // $run3 = mysqli_query($db, "SELECT * FROM remarks");
+  // while ($row3 = mysqli_fetch_assoc($run3)) {
+  //   $id = $row3['id']; $name = $row3['name'];
 ?>
-<div class="modal fade" id="<?php echo"editRemarks".$id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<!-- <div class="modal fade" id="<?php echo"editRemarks".$id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -306,7 +306,6 @@
             <div class="col-sm-12">
                 <label for="exampleInputPassword1">Remarks</label>
                 <input type="hidden" name="remarksId" value="<?php echo $id; ?>">
-                <!-- <input type="text" name="remarks" value="<?php echo $name; ?>" class="form-control" required placeholder="Remarks"> -->
                 <textarea name="remarks" class="form-control" rows="3"><?php echo $name; ?></textarea>
                 
             </div>
@@ -320,8 +319,8 @@
       </form>
     </div>
   </div>
-</div>
-<?php } ?>
+</div> -->
+<?php //} ?>
 
 
 <!-- bin numbers edit -->

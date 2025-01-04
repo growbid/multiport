@@ -95,7 +95,15 @@
                 Destroy <i class="bi bi-trash"></i>
               </a>
             </div>
+
+            <div class="list-inline-item">
+              <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#switchModal">
+                Switch <i class="bi bi-arrow-clockwise"></i>
+              </a>
+            </div>
             <?php } ?>
+
+        
 
             <!-- <div class="list-inline-item logout">
               <form method="post" action="index.php">

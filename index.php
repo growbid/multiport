@@ -12,6 +12,7 @@
             </h2>
           </div>
         </div>
+        <?php// echo $msg; ?>
         <!-- Modal Filter -->
         <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg">
@@ -225,6 +226,83 @@
             </div>
           </div>
         </div>
+
+
+
+        
+
+
+
+        <!-- Modal switch -->
+        <div class="modal fade" id="switchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Switch Vessels</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form method="post" action="index.php">
+              <div class="modal-body">
+                
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputState">Vessel One</label>
+                    <select class="form-control search" name="firstvsl">
+                      <option value="">--SELECT--</option>
+                      <?php selectOptions("vessels","vessel_name"); ?>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputState">Vessel Two</label>
+                    <select class="form-control search" name="secondvsl">
+                      <option value="">--SELECT--</option>
+                      <?php selectOptions("vessels","vessel_name"); ?>
+                    </select>
+                  </div>
+                </div> 
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" name="switchvsl" class="btn btn-primary">Swap</button>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Modal Add vessel -->
+        <!-- <div class="modal fade" id="addVassel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Vessels</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form method="post" action="index.php">
+              <div class="modal-body">
+                
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputState">MSL</label>
+                    <input id="fromDate" type="text" class="form-control" name="msl_num" >
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputState">Vessel</label>
+                    <input id="fromDate" type="text" class="form-control" name="vessel_name" >
+                  </div>
+                </div> 
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" name="addVassel" class="btn btn-primary">Swap</button>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div> -->
 
         <section class="no-padding-top no-padding-bottom">
           <div class="container-fluid">
